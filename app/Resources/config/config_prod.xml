@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+        * This file is part of the CS587Grader website.
+        * Copyright 2014 Tyler Anthony Romeo
+        *
+        * CS587Grader is free software: you can redistribute it and/or modify
+        * it under the terms of the GNU Affero General Public License as published by
+        * the Free Software Foundation, either version 3 of the License, or
+        * (at your option) any later version.
+        *
+        * Foobar is distributed in the hope that it will be useful,
+        * but WITHOUT ANY WARRANTY; without even the implied warranty of
+        * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        * GNU Affero General Public License for more details.
+        *
+        * You should have received a copy of the GNU Affero General Public License
+        * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:monolog="http://symfony.com/schema/dic/monolog"
+           xmlns:framework="http://symfony.com/schema/dic/symfony"
+           xmlns:doctrine="http://symfony.com/schema/dic/doctrine">
+    <imports>
+        <import resource="config.xml"/>
+    </imports>
+
+    <parameters>
+        <parameter key="router.options.matcher.cache_class">null</parameter>
+        <parameter key="router.options.matcher_class">
+            Symfony\Component\Routing\Matcher\ApacheUrlMatcher
+        </parameter>
+    </parameters>
+
+    <framework:config>
+            <framework:validation cache="apc" />
+    </framework:config>
+    <doctrine:config>
+            <doctrine:orm metadata-cache-driver="apc" query-cache-driver="apc" result-cache-driver="apc" />
+    </doctrine:config>
+
+    <monolog:config>
+        <monolog:handler name="main" type="fingers_crossed" action-level="error" handler="nested" />
+        <monolog:handler name="nested" type="stream" path="%kernel.logs_dir%/%kernel.environment%.log" level="debug" />
+        <monolog:handler name="console" type="console" />
+    </monolog:config>
+</container>

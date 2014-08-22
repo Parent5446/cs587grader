@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+        * This file is part of the CS587Grader website.
+        * Copyright 2014 Tyler Anthony Romeo
+        *
+        * CS587Grader is free software: you can redistribute it and/or modify
+        * it under the terms of the GNU Affero General Public License as published by
+        * the Free Software Foundation, either version 3 of the License, or
+        * (at your option) any later version.
+        *
+        * Foobar is distributed in the hope that it will be useful,
+        * but WITHOUT ANY WARRANTY; without even the implied warranty of
+        * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        * GNU Affero General Public License for more details.
+        *
+        * You should have received a copy of the GNU Affero General Public License
+        * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:webprofiler="http://symfony.com/schema/dic/webprofiler"
+           xmlns:framework="http://symfony.com/schema/dic/symfony"
+           xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer">
+    <imports>
+        <import resource="config_dev.xml"/>
+    </imports>
+
+    <framework:config test="true">
+        <framework:session storage-id="session.storage.mock_file" />
+        <framework:profiler collect="false" />
+    </framework:config>
+
+    <webprofiler:config toolbar="false" intercept-redirects="false" />
+
+    <swiftmailer:config disable-delivery="true" />
+</container>

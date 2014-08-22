@@ -1,0 +1,24 @@
+{
+    "name": "CS587Grader",
+    "description": "Grading application for CS-587",
+    "license": "AGPL-3.0",
+    "author": "Tyler Romeo <tylerromeo@gmail.com>",
+    "contributors": [{
+	"name": "Tyler Romeo",
+        "email": "tylerromeo@gmail.com"
+    }],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/parent5446/cs587-grader"
+    },
+    "bugs": {
+        "url": "https://github.com/parent5446/cs587-grader/issues"
+    },
+    "dependencies": {
+        "uglify-js": "~2.4",
+	"uglifycss": "*"
+    },
+    "devDependencies": {},
+    "preferGlobal": false,
+    "private": true
+}

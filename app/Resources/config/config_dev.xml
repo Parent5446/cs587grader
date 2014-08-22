@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+        * This file is part of the CS587Grader website.
+        * Copyright 2014 Tyler Anthony Romeo
+        *
+        * CS587Grader is free software: you can redistribute it and/or modify
+        * it under the terms of the GNU Affero General Public License as published by
+        * the Free Software Foundation, either version 3 of the License, or
+        * (at your option) any later version.
+        *
+        * Foobar is distributed in the hope that it will be useful,
+        * but WITHOUT ANY WARRANTY; without even the implied warranty of
+        * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        * GNU Affero General Public License for more details.
+        *
+        * You should have received a copy of the GNU Affero General Public License
+        * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:framework="http://symfony.com/schema/dic/symfony"
+           xmlns:webprofiler="http://symfony.com/schema/dic/webprofiler"
+           xmlns:monolog="http://symfony.com/schema/dic/monolog"
+           xmlns:assetic="http://symfony.com/schema/dic/assetic">
+    <imports>
+        <import resource="config.xml"/>
+    </imports>
+
+    <framework:config>
+        <framework:router resource="%kernel.root_dir%/Resources/config/routing_dev.xml" strict-requirements="true" />
+        <framework:profiler enabled="true" only-exceptions="false" />
+    </framework:config>
+
+    <assetic:config use-controller="%use_assetic_controller%" />
+
+    <monolog:config>
+        <monolog:handler name="main" type="stream" path="%kernel.logs_dir%/%kernel.environment%.log" level="debug" />
+        <monolog:handler name="console" type="console" bubble="false" />
+        <monolog:handler name="firephp" type="firephp" level="info" />
+        <monolog:handler name="chromephp" type="chromephp" level="info" />
+    </monolog:config>
+
+    <webprofiler:config intercept-redirects="false" toolbar="true" />
+</container>

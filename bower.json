@@ -1,0 +1,21 @@
+{
+  "name": "CS587Grader",
+  "authors": [
+    "Tyler Romeo <tylerromeo@gmail.com>"
+  ],
+  "description": "Grading application for CS-587",
+  "main": "web/app.php",
+  "license": "AGPL-3.0",
+  "homepage": "http://parent5446.us/cs587",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.2.0"
+  }
+}

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+        * This file is part of the CS587Grader website.
+        * Copyright 2014 Tyler Anthony Romeo
+        *
+        * CS587Grader is free software: you can redistribute it and/or modify
+        * it under the terms of the GNU Affero General Public License as published by
+        * the Free Software Foundation, either version 3 of the License, or
+        * (at your option) any later version.
+        *
+        * Foobar is distributed in the hope that it will be useful,
+        * but WITHOUT ANY WARRANTY; without even the implied warranty of
+        * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        * GNU Affero General Public License for more details.
+        *
+        * You should have received a copy of the GNU Affero General Public License
+        * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:twig="http://symfony.com/schema/dic/twig"
+           xmlns:framework="http://symfony.com/schema/dic/symfony"
+           xmlns:doctrine="http://symfony.com/schema/dic/doctrine"
+           xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer"
+           xmlns:assetic="http://symfony.com/schema/dic/assetic"
+           xmlns:fos-user="http://example.org/schema/dic/fos_user"
+           xmlns:hwi-oauth="http://example.org/schema/dic/hwi_oauth">
+    <imports>
+        <import resource="parameters.yml"/>
+        <import resource="security.yml" />
+    </imports>
+
+    <parameters>
+        <parameter id="hwi_oauth.user.provider.fosub_bridge.class">CS587Grader\AccountBundle\Entity\UserProvider</parameter>
+    </parameters>
+
+    <framework:config default-locale="%locale%" secret="%secret">
+        <framework:translator enabled="true" fallback="%locale%" />
+        <framework:router resource="%kernel.root_dir%/Resources/config/routing.xml" />
+        <framework:session />
+        <framework:form enabled="true" />
+        <framework:csrf-protection enabled="true" />
+        <framework:validation enabled="true" enable-annotations="false" />
+        <framework:templating>
+            <framework:engine>twig</framework:engine>
+        </framework:templating>
+    </framework:config>
+
+    <twig:config debug="%kernel.debug%" strict-variables="true" />
+
+    <assetic:config debug="%kernel.debug%" use-controller="false">
+        <assetic:filter name="cssrewrite" apply_to="\.css$" />
+        <assetic:filter name="uglifyjs2" bin="%kernel.root_dir%/../node_modules/.bin/uglifyjs" />
+        <assetic:filter name="uglifycss" bin="%kernel.root_dir%/../node_modules/.bin/uglifycss" />
+
+        <assetic:asset name="jquery">
+            <assetic:input>%kernel.root_dir%/Resources/vendor/jquery/dist/jquery.js</assetic:input>
+        </assetic:asset>
+        <assetic:asset name="bootstrap_js">
+            <assetic:input>%kernel.root_dir%/Resources/vendor/bootstrap/dist/js/bootstrap.js</assetic:input>
+        </assetic:asset>
+        <assetic:asset name="bootstrap_css">
+            <assetic:input>%kernel.root_dir%/Resources/vendor/bootstrap/dist/css/bootstrap.css</assetic:input>
+        </assetic:asset>
+    </assetic:config>
+
+    <doctrine:config>
+        <doctrine:dbal charset="UTF8"
+                       driver="%database_driver%"
+                       host="%database_host%"
+                       port="%database_port%"
+                       dbname="%database_name%"
+                       user="%database_user%"
+                       password="%database_password%"
+                       path="%database_path%" />
+        <doctrine:orm auto-generate-proxy-classes="%kernel.debug%" auto-mapping="true" />
+    </doctrine:config>
+
+    <swiftmailer:config transport="%mailer_transport%"
+                        host="%mailer_host%"
+                        username="%mailer_user%"
+                        password="%mailer_password%">
+        <swiftmailer:spool type="memory" />
+    </swiftmailer:config>
+
+    <fos-user:config db-driver="orm"
+                     firewall-name="main"
+                     user-class="CS587Grader\AccountBundle\Entity\User" />
+
+    <hwi-oauth:config firewall-name="main">
+        <hwi-oauth:fosub>
+            <hwi-oauth:properties>
+                <hwi-oauth:property name="bitbucket">username</hwi-oauth:property>
+            </hwi-oauth:properties>
+        </hwi-oauth:fosub>
+
+        <hwi-oauth:resource-owner name="bitbucket"
+                                  type="bitbucket"
+                                  client-id="%bitbucket_id%"
+                                  client-secret="%bitbucket_secret%" />
+    </hwi-oauth:config>
+</container>
