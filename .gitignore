@@ -8,8 +8,8 @@
 !app/logs/.gitkeep
 
 # Parameters
-/app/config/parameters.yml
-/app/config/parameters.ini
+/app/Resources/config/parameters.yml
+/app/Resources/config/parameters.ini
 
 # Managed by Composer
 /app/bootstrap.php.cache
