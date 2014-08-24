@@ -48,9 +48,6 @@ class User extends BaseUser {
 	/** @var string OAuth access token secret */
 	protected $accessTokenSecret;
 
-	/** @var string OAuth refresh token */
-	protected $refreshToken;
-
 	/** @var string Repository the user will submit from */
 	protected $repository;
 
@@ -71,12 +68,10 @@ class User extends BaseUser {
 	 *
 	 * @param string $token Access token
 	 * @param string $secret Token secret
-	 * @param string $refresh Refresh token [optional]
 	 */
-	public function setTokens( $token, $secret, $refresh = null ) {
+	public function setTokens( $token, $secret ) {
 		$this->accessToken = $token;
 		$this->accessTokenSecret = $secret;
-		$this->refreshToken = $refresh;
 	}
 
 	/**

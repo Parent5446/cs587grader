@@ -8,7 +8,6 @@
         </id>
         <field name="accessToken" type="string" length="255" />
         <field name="accessTokenSecret" type="string" length="255" />
-        <field name="refreshToken" type="string" length="255" nullable="true" />
         <field name="repository" type="string" length="255" nullable="true" />
 
         <attribute-overrides>

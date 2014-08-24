@@ -27,6 +27,7 @@ c License
 namespace CS587Grader\SubmissionBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -57,7 +58,7 @@ class GradeCommand extends DoctrineCommand
 	 * {@inheritdoc}
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
-		$em = $this->getEntityManager( '' );
+		$em = $this->getEntityManager( null );
 
 		/** @var User $user */
 		$user = $em->getRepository( 'CS587GraderAccountBundle:User' )
@@ -91,8 +92,9 @@ class GradeCommand extends DoctrineCommand
 		);
 
 		// Fetch the tarball for the commit
-		$res = $client->get( "https://bitbucket.org/{$user->getRepository()}/get/$commit.tar.gz" );
-		if ( $res->getStatusCode() !== 200 ) {
+		try {
+			$res = $client->get( "https://bitbucket.org/{$user->getRepository()}/get/$commit.tar.gz" );
+		} catch ( ClientException $e ) {
 			return new Grade( $assignment, $user, null, 'grade-downloaderror' );
 		}
 		$body = $res->getBody();

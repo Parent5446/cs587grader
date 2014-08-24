@@ -16,7 +16,7 @@
     },
     "dependencies": {
         "uglify-js": "~2.4",
-	"uglifycss": "*"
+	    "uglifycss": "*"
     },
     "devDependencies": {},
     "preferGlobal": false,
