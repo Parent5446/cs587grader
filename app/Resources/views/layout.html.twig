@@ -22,16 +22,24 @@
 				<span class="icon-bar"></span>
 				<span class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="#">CS-587</a>
+			<a class="navbar-brand" href="{{ path( 'cs587_grader_submission_homepage' ) }}">CS-587</a>
 		</div>
 		<div class="navbar-collapse collapse">
 			<ul class="nav navbar-nav">
 				<li class="{% block nav_page_home %}{% endblock %}">
 					<a href="{{ path( 'cs587_grader_submission_homepage' ) }}">Assignments</a></li>
 
-                <li><a href="{{ path('fos_user_profile_show') }}">
-                    {{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}
-                </a></li>
+				{% if is_granted( 'ROLE_ADMIN' ) %}
+					<li><a href="{{ path('cs587_grader_submission_admin') }}">Admin</a></li>
+				{% endif %}
+
+				{% if is_granted( 'ROLE_USER' ) %}
+					<li>
+						<a href="{{ path('fos_user_profile_show') }}">
+							{{ 'layout.logged_in_as'|trans({'%username%': app.user.username}, 'FOSUserBundle') }}
+						</a>
+					</li>
+				{% endif %}
 			</ul>
 		</div>
 	</div>

@@ -20,8 +20,7 @@
  * @file
  * @author Tyler Romeo <tylerromeo@gmail.com>
  * @copyright 2013 Tyler Romeo
- * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Publi\
- * c License
+ * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
  */
 
 use Composer\Autoload\ClassLoader;

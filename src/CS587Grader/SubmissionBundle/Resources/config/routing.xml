@@ -4,7 +4,17 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
 
+    <import resource="@JMSJobQueueBundle/Controller/" type="annotation" prefix="/admin/jobs" />
+
+    <route id="cs587_grader_submission_edit" path="/admin/edit/{name}">
+        <default key="_controller">CS587GraderSubmissionBundle:Default:edit</default>
+        <default key="name" />
+    </route>
+    <route id="cs587_grader_submission_admin" path="/admin/">
+        <default key="_controller">CS587GraderSubmissionBundle:Default:admin</default>
+    </route>
     <route id="cs587_grader_submission_homepage" path="/">
         <default key="_controller">CS587GraderSubmissionBundle:Default:index</default>
     </route>
+
 </routes>

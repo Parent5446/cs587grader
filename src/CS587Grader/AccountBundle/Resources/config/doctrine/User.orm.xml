@@ -11,6 +11,8 @@
         <field name="refreshToken" type="string" length="255" nullable="true" />
         <field name="repository" type="string" length="255" nullable="true" />
 
+        <one-to-many target-entity="CS587Grader\SubmissionBundle\Entity\Grade" mapped-by="user" field="submissions" />
+
         <attribute-overrides>
             <attribute-override name="email">
                 <field column="no_email" type="string" length="255" nullable="true" />

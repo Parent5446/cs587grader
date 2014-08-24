@@ -30,7 +30,8 @@
     </imports>
 
     <parameters>
-        <parameter id="hwi_oauth.user.provider.fosub_bridge.class">CS587Grader\AccountBundle\Entity\UserProvider</parameter>
+        <parameter key="hwi_oauth.user.provider.fosub_bridge.class">CS587Grader\AccountBundle\Entity\UserProvider</parameter>
+        <parameter key="jms_job_queue.statistics">false</parameter>
     </parameters>
 
     <framework:config default-locale="%locale%" secret="%secret">
@@ -39,7 +40,7 @@
         <framework:session />
         <framework:form enabled="true" />
         <framework:csrf-protection enabled="true" />
-        <framework:validation enabled="true" enable-annotations="false" />
+        <framework:validation enabled="true" enable-annotations="true" />
         <framework:templating>
             <framework:engine>twig</framework:engine>
         </framework:templating>

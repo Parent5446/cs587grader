@@ -1,0 +1,11 @@
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                    http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="CS587Grader\SubmissionBundle\Entity\Assignment">
+        <id name="name" type="string" length="32" />
+        <field name="description" type="string" length="255" nullable="false" />
+        <field name="dueDate" type="datetime" nullable="true" />
+        <one-to-many target-entity="CS587Grader\SubmissionBundle\Entity\Grade" mapped-by="assignment" field="submissions" />
+    </entity>
+</doctrine-mapping>

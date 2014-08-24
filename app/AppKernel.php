@@ -20,8 +20,7 @@
  * @file
  * @author Tyler Romeo <tylerromeo@gmail.com>
  * @copyright 2013 Tyler Romeo
- * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Publi\
- * c License
+ * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
  */
 
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -47,7 +46,9 @@ class AppKernel extends Kernel
 			new Symfony\Bundle\AsseticBundle\AsseticBundle(),
 			new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
 			new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
-			new JMS\SerializerBundle\JMSSerializerBundle(),
+			new JMS\DiExtraBundle\JMSDiExtraBundle( $this ),
+			new JMS\AopBundle\JMSAopBundle(),
+			new JMS\JobQueueBundle\JMSJobQueueBundle(),
 			new FOS\UserBundle\FOSUserBundle(),
 			new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
 			new CS587Grader\AccountBundle\CS587GraderAccountBundle(),

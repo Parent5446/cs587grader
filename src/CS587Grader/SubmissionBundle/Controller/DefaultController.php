@@ -20,13 +20,15 @@
  * @file
  * @author Tyler Romeo <tylerromeo@gmail.com>
  * @copyright 2013 Tyler Romeo
- * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Publi\
- * c License
+ * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
  */
 
 namespace CS587Grader\SubmissionBundle\Controller;
 
+use JMS\JobQueueBundle\Entity\Job;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
+use CS587Grader\SubmissionBundle\Entity\Assignment;
 
 /**
  * Main controller that provides logic for submitting assignments
@@ -44,6 +46,97 @@ class DefaultController extends Controller
 		return $this->render(
 			'CS587GraderSubmissionBundle:Default:index.html.twig',
 			[]
+		);
+	}
+
+	/**
+	 * Shows list of assignments
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function adminAction() {
+		$assignments = $this->getDoctrine()
+			->getRepository( 'CS587GraderSubmissionBundle:Assignment' )
+			->findAll();
+
+		return $this->render(
+			'CS587GraderSubmissionBundle:Default:admin.html.twig',
+			[ 'assignments' => $assignments ]
+		);
+	}
+
+	/**
+	 * Allows editing or making a new assignment
+	 *
+	 * @param Request $request
+	 * @param string $name
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function editAction( Request $request, $name = '' ) {
+		/** @var Assignment $assignment */
+		$assignment = null;
+		if ( $name ) {
+			$assignment = $this->getDoctrine()->getRepository( 'CS587GraderSubmissionBundle:Assignment' )
+				->findOneBy( [ 'name' => $name ] );
+		}
+
+		if ( !$assignment ) {
+			$assignment = new Assignment( $name );
+		}
+
+		$form = $this->createFormBuilder( $assignment )
+			->add( 'name', 'text' )
+			->add( 'description', 'text' )
+			->add( 'dueDate', 'datetime' )
+			->add( 'save', 'submit' )
+			->add( 'delete', 'submit' )
+			->getForm();
+
+		$form->handleRequest( $request );
+		// Process a submitted form
+		if ( $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$button = $form->getClickedButton();
+			/** @var Job $job */
+			$job = null;
+
+			// Fetch the related job, if it exists
+			if ( $name ) {
+				/** @var \JMS\JobQueueBundle\Entity\Repository\JobRepository $jobRepo */
+				$jobRepo = $em->getRepository( 'JMSJobQueueBundle:Job' );
+				$job = $jobRepo->findJobForRelatedEntity( 'cs587:collect', $assignment );
+			}
+
+			if ( $button->getName() === 'save' ) {
+				// User wants to save
+
+				// Persist assignment if it is a new one
+				if ( !$name ) {
+					$em->persist( $assignment );
+				}
+
+				// Make a job if one does not exist, and persist it
+				if ( !$job ) {
+					$job = new Job( 'cs587:collect', [ $assignment->getName() ] );
+					$job->addRelatedEntity( $assignment );
+					$em->persist( $job );
+				}
+				$job->setExecuteAfter( $assignment->getDueDate() );
+			} elseif ( $button->getName() === 'delete' ) {
+				// User wants to delete
+				$em->remove( $job );
+				$em->remove( $assignment );
+			}
+
+			$em->flush();
+
+			return $this->redirect( $this->generateUrl( 'cs587_grader_submission_admin' ) );
+		}
+
+		return $this->render(
+			'CS587GraderSubmissionBundle:Default:edit.html.twig',
+			[ 'form' => $form->createView() ]
 		);
 	}
 }

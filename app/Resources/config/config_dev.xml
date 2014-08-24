@@ -39,5 +39,5 @@
         <monolog:handler name="chromephp" type="chromephp" level="info" />
     </monolog:config>
 
-    <webprofiler:config intercept-redirects="false" toolbar="true" />
+    <webprofiler:config intercept-redirects="%debug_redirects%" toolbar="%debug_toolbar%" />
 </container>

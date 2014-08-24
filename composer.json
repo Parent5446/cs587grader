@@ -8,7 +8,8 @@
     },
     "require": {
         "php": ">=5.4",
-        "symfony/symfony": "2.5.*",
+        "symfony/symfony": "~2.5",
+        "symfony/console": "~2.5",
         "doctrine/orm": "~2.2,>=2.2.3",
         "doctrine/doctrine-bundle": "~1.2",
         "twig/extensions": "~1.0",
@@ -18,25 +19,26 @@
         "sensio/distribution-bundle": "~3.0",
         "sensio/framework-extra-bundle": "~3.0",
         "incenteev/composer-parameter-handler": "~2.0",
-        "friendsofsymfony/rest-bundle": "1.3.*",
-        "jms/serializer-bundle": "~0.13.0",
         "friendsofsymfony/user-bundle": "~1.3",
-        "nelmio/api-doc-bundle": "@stable",
-        "willdurand/hateoas-bundle": "@stable",
         "hwi/oauth-bundle": "0.4.*@dev",
-        "guzzlehttp/guzzle": "4.2.1",
-        "guzzlehttp/oauth-subscriber": "0.1.2"
+        "guzzlehttp/guzzle": "~4.2",
+        "guzzlehttp/oauth-subscriber": "0.1.2",
+        "aws/aws-sdk-php": "~2.6",
+        "jms/job-queue-bundle": "dev-master",
+        "pagerfanta/pagerfanta": "dev-master"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",
         "phpmd/phpmd": "~2.0",
-        "phpunit/phpunit": "4.2.*"
+        "phpunit/phpunit": "~4.2"
     },
     "scripts": {
         "post-root-package-install": [
             "SymfonyStandard\\Composer::hookRootPackageInstall"
         ],
         "post-install-cmd": [
+            "npm install",
+            "bower install",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",
@@ -45,6 +47,8 @@
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::removeSymfonyStandardFiles"
         ],
         "post-update-cmd": [
+            "npm install",
+            "bower install",
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::buildBootstrap",
             "Sensio\\Bundle\\DistributionBundle\\Composer\\ScriptHandler::clearCache",

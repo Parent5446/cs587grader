@@ -27,6 +27,7 @@ c License
 
 namespace CS587Grader\AccountBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Entity\User as BaseUser;
 use GuzzleHttp\Subscriber\Oauth\Oauth1 as GuzzleOauth1;
 use GuzzleHttp\Client as GuzzleClient;
@@ -38,30 +39,32 @@ use GuzzleHttp\Client as GuzzleClient;
  * @package CS587Grader\AccountBundle\Entity
  */
 class User extends BaseUser {
-	/**
-	 * @var int Auto-generated surrogate key
-	 */
+	/** @var int Auto-generated surrogate key */
 	protected $id;
 
-	/**
-	 * @var string OAuth access token
-	 */
+	/** @var string OAuth access token */
 	protected $accessToken;
 
-	/**
-	 * @var string OAuth access token secret
-	 */
+	/** @var string OAuth access token secret */
 	protected $accessTokenSecret;
 
-	/**
-	 * @var string OAuth refresh token
-	 */
+	/** @var string OAuth refresh token */
 	protected $refreshToken;
 
-	/**
-	 * @var string Repository the user will submit from
-	 */
+	/** @var string Repository the user will submit from */
 	protected $repository;
+
+	/** @var \CS587Grader\SubmissionBundle\Entity\Grade[]|ArrayCollection */
+	protected $submissions;
+
+	/**
+	 * Initialize private properties
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		$this->submissions = new ArrayCollection();
+	}
 
 	/**
 	 * Set the OAuth tokens for the user
