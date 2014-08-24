@@ -118,6 +118,6 @@ class User extends BaseUser {
 	 * @return string Full repo name (with owner)
 	 */
 	public function getRepository() {
-		return $this->repository;
+		return strtolower( $this->repository );
 	}
 }

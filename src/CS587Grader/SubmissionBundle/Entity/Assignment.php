@@ -54,6 +54,7 @@ class Assignment {
 	public function __construct( $name ) {
 		$this->name = $name;
 		$this->submissions = new ArrayCollection();
+		$this->dueDate = new \DateTime();
 	}
 
 	/**

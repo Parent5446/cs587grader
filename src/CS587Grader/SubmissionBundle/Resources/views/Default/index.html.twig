@@ -1,3 +1,44 @@
 {% extends '::layout.html.twig' %}
 
 {% block nav_page_home %}active{% endblock %}
+
+{% block javascripts %}
+	{% javascripts '@moment_js'
+	'@CS587GraderSubmissionBundle/Resources/public/js/countdown.js' %}
+	<script src="{{ asset_url }}"></script>
+	{% endjavascripts %}
+{% endblock %}
+
+{% block content %}
+	<div class="panel panel-default">
+		<div class="panel-heading">Assignments</div>
+		<div class="panel-body">
+			<strong>Reminder:</strong> Assignments will be automatically collected
+			from the repository selected in your profile. You <em>must</em> make a
+			tag with the same name as the assignment.
+		</div>
+
+		<table class="table">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th>Name</th>
+				<th>Due Date</th>
+				<th>Time Remaining</th>
+				<th>Grade</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for assignment in assignments %}
+				<tr>
+					<td></td>
+					<td>{{ assignment.name }}</td>
+					<td>{{ assignment.dueDate|date('c') }}</td>
+					<td class="cs587-countdown" data-duedate="{{ assignment.dueDate|date('c') }}"></td>
+					<td></td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

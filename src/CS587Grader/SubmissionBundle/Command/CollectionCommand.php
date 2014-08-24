@@ -27,6 +27,7 @@ c License
 namespace CS587Grader\SubmissionBundle\Command;
 
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
+use GuzzleHttp\Exception\ClientException;
 use JMS\JobQueueBundle\Entity\Job;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -53,7 +54,7 @@ class CollectionCommand extends DoctrineCommand {
 	 * {@inheritdoc}
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
-		$em = $this->getEntityManager( '' );
+		$em = $this->getEntityManager( null );
 
 		/** @var User[] $users */
 		$users = $em->getRepository( 'CS587GraderAccountBundle:User' )->findAll();
@@ -84,8 +85,9 @@ class CollectionCommand extends DoctrineCommand {
 		);
 
 		// Get the commit associated with the assignment tag
-		$res = $client->get( "repositories/{$user->getRepository()}/branches-tags" );
-		if ( $res->getStatusCode() !== 200 ) {
+		try {
+			$res = $client->get( "repositories/{$user->getRepository()}/branches-tags" );
+		} catch ( ClientException $e ) {
 			return $this->assignZero( $assignment, $user, 'grade-norepo' );
 		}
 
@@ -126,7 +128,7 @@ class CollectionCommand extends DoctrineCommand {
 	private function assignZero( Assignment $assignment, User $user, $message ) {
 		$grade = new Grade( $assignment, $user, 0, $message );
 
-		$em = $this->getEntityManager( '' );
+		$em = $this->getEntityManager( null );
 		$em->persist( $grade );
 
 		return null;

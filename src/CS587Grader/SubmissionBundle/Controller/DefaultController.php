@@ -29,6 +29,7 @@ use JMS\JobQueueBundle\Entity\Job;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use CS587Grader\SubmissionBundle\Entity\Assignment;
+use Doctrine\ORM\Query\Expr;
 
 /**
  * Main controller that provides logic for submitting assignments
@@ -43,9 +44,22 @@ class DefaultController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public function indexAction() {
+		/** @var \Doctrine\ORM\EntityManager $em */
+		$em = $this->getDoctrine()->getManager();
+		$res = $em->createQueryBuilder()
+			->select( 'a', 'g' )
+			->from( 'CS587GraderSubmissionBundle:Assignment', 'a' )
+			->leftJoin( 'a.submissions', 'g', Expr\Join::WITH, 'g.user = :user' )
+			->orderBy( 'a.dueDate' )
+			->setParameter( 'user', $this->getUser() )
+
+			->getQuery()
+			->getResult();
+
+
 		return $this->render(
 			'CS587GraderSubmissionBundle:Default:index.html.twig',
-			[]
+			[ 'assignments' => $res ]
 		);
 	}
 
@@ -90,7 +104,7 @@ class DefaultController extends Controller
 			->add( 'description', 'text' )
 			->add( 'dueDate', 'datetime' )
 			->add( 'save', 'submit' )
-			->add( 'delete', 'submit' )
+			->add( $name ? 'delete' : 'cancel', 'submit' )
 			->getForm();
 
 		$form->handleRequest( $request );
@@ -125,7 +139,9 @@ class DefaultController extends Controller
 				$job->setExecuteAfter( $assignment->getDueDate() );
 			} elseif ( $button->getName() === 'delete' ) {
 				// User wants to delete
-				$em->remove( $job );
+				if ( $job ) {
+					$em->remove( $job );
+				}
 				$em->remove( $assignment );
 			}
 

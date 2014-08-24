@@ -30,7 +30,16 @@
 					<a href="{{ path( 'cs587_grader_submission_homepage' ) }}">Assignments</a></li>
 
 				{% if is_granted( 'ROLE_ADMIN' ) %}
-					<li><a href="{{ path('cs587_grader_submission_admin') }}">Admin</a></li>
+					<li class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
+						<ul class="dropdown-menu">
+							<li><a href="{{ path('cs587_grader_submission_admin') }}">Assignments</a></li>
+							{% if is_granted( 'ROLE_SUPER_ADMIN' ) %}
+								<li><a href="{{ path( 'jms_jobs_overview' ) }}">Job Queue</a></li>
+							{% endif %}
+						</ul>
+					</li>
+
 				{% endif %}
 
 				{% if is_granted( 'ROLE_USER' ) %}
@@ -61,5 +70,7 @@
 {% javascripts '@jquery' '@bootstrap_js' %}
 <script src="{{ asset_url }}"></script>
 {% endjavascripts %}
+{% block javascripts %}
+{% endblock %}
 </body>
 </html>

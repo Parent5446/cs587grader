@@ -3,17 +3,36 @@
 {% block nav_page_admin %}active{% endblock %}
 
 {% block content %}
-	<a href="{{ path( 'cs587_grader_submission_edit' ) }}">New</a>
 
-	<ul>
-		{% for assignment in assignments %}
-			<li>
-				<a href="{{ path( 'cs587_grader_submission_edit', { 'name': assignment.name } ) }}">
-					{{ assignment.name }}
-				</a>
-				({{ assignment.description }})
-				&mdash; {{ assignment.dueDate|date('Y-m-d') }}
-			</li>
-		{% endfor %}
-	</ul>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">Assignments</div>
+
+		<div class="panel-body">
+			<a class="btn btn-primary" href="{{ path( 'cs587_grader_submission_edit' ) }}">New</a>
+		</div>
+
+		<table class="table">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th>Name</th>
+				<th>Description</th>
+				<th>Due Date</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for assignment in assignments %}
+				<tr>
+					<td></td>
+					<td><a href="{{ path( 'cs587_grader_submission_edit', { 'name': assignment.name } ) }}">
+						{{ assignment.name }}
+					</a></td>
+					<td>{{ assignment.description }}</td>
+					<td>{{ assignment.dueDate|date('c') }}</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
 {% endblock %}

@@ -62,6 +62,9 @@
         <assetic:asset name="bootstrap_css">
             <assetic:input>%kernel.root_dir%/Resources/vendor/bootstrap/dist/css/bootstrap.css</assetic:input>
         </assetic:asset>
+        <assetic:asset name="moment_js">
+            <assetic:input>%kernel.root_dir%/Resources/vendor/moment/moment.js</assetic:input>
+        </assetic:asset>
     </assetic:config>
 
     <doctrine:config>
