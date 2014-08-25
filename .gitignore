@@ -4,8 +4,10 @@
 # Cache and logs
 /app/cache/*
 /app/logs/*
+/app/uploads/*
 !app/cache/.gitkeep
 !app/logs/.gitkeep
+!app/uploads/.gitkeep
 
 # Parameters
 /app/Resources/config/parameters.yml

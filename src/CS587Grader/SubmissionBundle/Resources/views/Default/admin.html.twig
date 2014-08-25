@@ -1,10 +1,9 @@
 {% extends '::layout.html.twig' %}
 
 {% block nav_page_admin %}active{% endblock %}
+{% block nav_page_admin_assignments %}active{% endblock %}
 
 {% block content %}
-
-
 	<div class="panel panel-default">
 		<div class="panel-heading">Assignments</div>
 
@@ -19,17 +18,23 @@
 				<th>Name</th>
 				<th>Description</th>
 				<th>Due Date</th>
+				<th>Submissions</th>
 			</tr>
 			</thead>
 			<tbody>
 			{% for assignment in assignments %}
 				<tr>
-					<td></td>
+					<td>{{ loop.index }}</td>
 					<td><a href="{{ path( 'cs587_grader_submission_edit', { 'name': assignment.name } ) }}">
 						{{ assignment.name }}
 					</a></td>
 					<td>{{ assignment.description }}</td>
 					<td>{{ assignment.dueDate|date('c') }}</td>
+					<td>
+						<a href="{{ path( 'cs587_grader_submission_grade_list', { 'name': assignment.name } ) }}">
+							{{ assignment.submissions|length }}
+						</a>
+					</td>
 				</tr>
 			{% endfor %}
 			</tbody>

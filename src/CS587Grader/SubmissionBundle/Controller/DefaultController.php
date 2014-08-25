@@ -25,6 +25,7 @@
 
 namespace CS587Grader\SubmissionBundle\Controller;
 
+use CS587Grader\SubmissionBundle\Entity\Grade;
 use JMS\JobQueueBundle\Entity\Job;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
@@ -101,7 +102,7 @@ class DefaultController extends Controller
 
 		$form = $this->createFormBuilder( $assignment )
 			->add( 'name', 'text' )
-			->add( 'description', 'text' )
+			->add( 'description', 'text', [ 'required' => false ] )
 			->add( 'dueDate', 'datetime' )
 			->add( 'save', 'submit' )
 			->add( $name ? 'delete' : 'cancel', 'submit' )
@@ -153,6 +154,52 @@ class DefaultController extends Controller
 		return $this->render(
 			'CS587GraderSubmissionBundle:Default:edit.html.twig',
 			[ 'form' => $form->createView() ]
+		);
+	}
+
+	/**
+	 * List the submissions for an assignment
+	 *
+	 * @param Assignment $assignment
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listGradesAction( Assignment $assignment ) {
+		return $this->render(
+			'CS587GraderSubmissionBundle:Default:listGrades.html.twig',
+			[ 'assignment' => $assignment ]
+		);
+	}
+
+	/**
+	 * Edit a grade for a user
+	 *
+	 * @param Grade $grade
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function editGradeAction( Request $request, Grade $grade ) {
+		$form = $this->createFormBuilder( $grade )
+			->add( 'grade', 'integer', [ 'precision' => 0 ] )
+			->add( 'gradeReason', 'text' )
+			->add( 'gradeExtendedReason', 'textarea', [ 'required' => false ] )
+			->add( 'save', 'submit' )
+			->getForm();
+
+		$form->handleRequest( $request );
+		if ( $form->isValid() ) {
+			$this->getDoctrine()->getManager()->flush();
+
+			return $this->redirect(
+				$this->generateUrl(
+					'cs587_grader_submission_grade_list',
+					[ 'name' => $grade->getAssignment()->getName() ]
+				) );
+		}
+
+		return $this->render(
+			'CS587GraderSubmissionBundle:Default:editGrade.html.twig',
+			[ 'grade' => $grade, 'form' => $form->createView() ]
 		);
 	}
 }

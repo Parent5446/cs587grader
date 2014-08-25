@@ -1,0 +1,39 @@
+{% extends '::layout.html.twig' %}
+
+{% block nav_page_admin %}active{% endblock %}
+{% block nav_page_admin_assignments %}active{% endblock %}
+
+{% block content %}
+	<div class="panel panel-default">
+		<div class="panel-heading">{{ assignment.name }}</div>
+
+		<table class="table">
+			<thead>
+			<tr>
+				<th>#</th>
+				<th>Username</th>
+				<th>Grade</th>
+				<th>Reason</th>
+				<th>Actions</th>
+			</tr>
+			</thead>
+			<tbody>
+			{% for grade in assignment.submissions %}
+				<tr>
+					<td>{{ loop.index }}</td>
+					<td>{{ grade.user.username }}</td>
+					<td>{{ grade.grade }}</td>
+					<td>{{ grade.gradeReason }}</td>
+					<td>
+						<a class="btn btn-primary"
+						   href="{{ path( 'cs587_grader_submission_grade_edit',
+						                  { 'assignment': assignment.name, 'user': grade.user.id } ) }}">
+							{{ 'Edit'|trans }}
+						</a>
+					</td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}

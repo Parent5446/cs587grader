@@ -43,7 +43,7 @@ class Grade {
 	/** @var int|null The actual grade */
 	protected $grade;
 
-	/** @var string|null Amazon AWS key */
+	/** @var string|null File key/name */
 	protected $fileKey;
 
 	/** @var string|null Reason for the grade (message key) */
@@ -68,11 +68,100 @@ class Grade {
 	}
 
 	/**
-	 * Set the AWS S3 file key where the submission is stored
+	 * Get the user the grade belongs to
+	 *
+	 * @return User
+	 */
+	public function getUser() {
+		return $this->user;
+	}
+
+	/**
+	 * Get the assignment this grade is on
+	 *
+	 * @return Assignment
+	 */
+	public function getAssignment() {
+		return $this->assignment;
+	}
+
+	/**
+	 * Get the grade
+	 *
+	 * @return int|null
+	 */
+	public function getGrade() {
+		return $this->grade;
+	}
+
+	/**
+	 * Set the grade for the assignment
+	 *
+	 * @param int|null $grade
+	 */
+	public function setGrade( $grade ) {
+		$this->grade = $grade;
+	}
+
+	/**
+	 * Get the brief grade reasons
+	 *
+	 * @return null|string
+	 */
+	public function getGradeReason() {
+		return $this->reason;
+	}
+
+	/**
+	 * Set the short reason for the grade
+	 *
+	 * @param string $reason
+	 */
+	public function setGradeReason( $reason ) {
+		$this->reason = $reason;
+	}
+
+	/**
+	 * Get the extended reason for the grade
+	 *
+	 * @return null|string
+	 */
+	public function getGradeExtendedReason() {
+		if ( is_resource( $this->extendedReason ) ) {
+			return stream_get_contents( $this->extendedReason );
+		} else {
+			return $this->extendedReason;
+		}
+	}
+
+	/**
+	 * Set the extended reason for the grade
+	 *
+	 * @param string|null $reason
+	 */
+	public function setGradeExtendedReason( $reason ) {
+		$this->extendedReason = $reason;
+	}
+
+	/**
+	 * Set the file key where the submission is stored
 	 *
 	 * @param string $fileKey
+	 *
+	 * @return $this
 	 */
 	public function setFileKey( $fileKey ) {
 		$this->fileKey = $fileKey;
+
+		return $this;
+	}
+
+	/**
+	 * Get the file key, if it exists
+	 *
+	 * @return null|string
+	 */
+	public function getFileKey() {
+		return $this->fileKey;
 	}
 }

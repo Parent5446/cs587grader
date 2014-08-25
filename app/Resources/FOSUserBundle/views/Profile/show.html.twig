@@ -1,0 +1,7 @@
+{% extends "FOSUserBundle::layout.html.twig" %}
+
+{% block fos_user_content %}
+	<p>{{ 'profile.show.username'|trans({}, 'FOSUserBundle') }}: {{ user.username }}</p>
+	<p>{{ 'profile.show.email'|trans({}, 'FOSUserBundle') }}: {{ user.email }}</p>
+	<p>Repository: <a href="{{ path('cs587_grader_account_reposelector') }}">{{ user.repository ?: "None"|trans }}</a></p>
+{% endblock fos_user_content %}

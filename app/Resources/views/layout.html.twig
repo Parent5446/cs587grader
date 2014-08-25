@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
-	<title>{% block title %}{% endblock %}</title>
+	<title>{% block title %}{% endblock %} | CS-585 Grader</title>
 
 	{% stylesheets '@bootstrap_css' %}
 	<link rel="stylesheet" href="{{ asset_url }}"/>
@@ -30,12 +30,15 @@
 					<a href="{{ path( 'cs587_grader_submission_homepage' ) }}">Assignments</a></li>
 
 				{% if is_granted( 'ROLE_ADMIN' ) %}
-					<li class="dropdown">
+					<li class="dropdown {% block nav_page_admin %}{% endblock %}">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Admin <span class="caret"></span></a>
 						<ul class="dropdown-menu">
-							<li><a href="{{ path('cs587_grader_submission_admin') }}">Assignments</a></li>
+							<li class="{% block nav_page_admin_assignments %}{% endblock %}">
+								<a href="{{ path('cs587_grader_submission_admin') }}">Assignments</a></li>
+
 							{% if is_granted( 'ROLE_SUPER_ADMIN' ) %}
-								<li><a href="{{ path( 'jms_jobs_overview' ) }}">Job Queue</a></li>
+								<li class="{% block nav_page_admin_jobqueue %}{% endblock %}">
+									<a href="{{ path( 'jms_jobs_overview' ) }}">Job Queue</a></li>
 							{% endif %}
 						</ul>
 					</li>

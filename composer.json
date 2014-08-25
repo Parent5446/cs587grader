@@ -23,7 +23,6 @@
         "hwi/oauth-bundle": "0.4.*@dev",
         "guzzlehttp/guzzle": "~4.2",
         "guzzlehttp/oauth-subscriber": "0.1.2",
-        "aws/aws-sdk-php": "~2.6",
         "jms/job-queue-bundle": "dev-master",
         "pagerfanta/pagerfanta": "dev-master"
     },

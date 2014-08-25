@@ -102,17 +102,22 @@ class User extends BaseUser {
 	 * Set the repository from which the user will submit assignments
 	 *
 	 * @param string $name Full repo name (with owner)
+	 *
+	 * @throws \InvalidArgumentException If owner is not the user
 	 */
 	public function setRepository( $name ) {
+		if ( substr( $name, 0, strlen( $this->getUsername() ) ) !== $this->getUsername() ) {
+			throw new \InvalidArgumentException( 'Repository name must be owned by user.' );
+		}
 		$this->repository = $name;
 	}
 
 	/**
 	 * Get the name of the user's repository
 	 *
-	 * @return string Full repo name (with owner)
+	 * @return string Repo name without owner
 	 */
 	public function getRepository() {
-		return strtolower( $this->repository );
+		return strtolower( substr( $this->repository, strlen( $this->getUsername() ) + 1 ) );
 	}
 }

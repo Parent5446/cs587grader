@@ -26,16 +26,44 @@
 				<th>Due Date</th>
 				<th>Time Remaining</th>
 				<th>Grade</th>
+				<th>Grade Reason</th>
+				{% if is_granted( 'ROLE_OAUTH_USER' ) %}
+					<th>Manual Submit</th>
+				{% endif %}
 			</tr>
 			</thead>
 			<tbody>
 			{% for assignment in assignments %}
 				<tr>
-					<td></td>
+					<td>{{ loop.index }}</td>
 					<td>{{ assignment.name }}</td>
-					<td>{{ assignment.dueDate|date('c') }}</td>
+					<td>{{ assignment.dueDate|date('Y-m-d H:i:s') }}</td>
 					<td class="cs587-countdown" data-duedate="{{ assignment.dueDate|date('c') }}"></td>
-					<td></td>
+					<td>
+						{% if assignment.submissions|length > 0 and assignment.submissions[0].grade != null %}
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+									{{ assignment.submissions[0].grade }}
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+									<li>{{ assignment.submissions[0].gradeExtendedReason }}</li>
+								</ul>
+							</div>
+						{% else %}
+							{{ 'Not Graded'|trans }}
+						{% endif %}
+					</td>
+					<td>
+						{% if assignment.submissions|length > 0 %}
+							{{ assignment.submissions[0].gradeReason|trans }}
+						{% endif %}
+					</td>
+					{% if not is_granted( 'ROLE_OAUTH_USER' ) and assignment.submissions|length == 0 %}
+						<td>
+							<a class="btn btn-primary" href="#">Manual Submit</a>
+						</td>
+					{% endif %}
 				</tr>
 			{% endfor %}
 			</tbody>

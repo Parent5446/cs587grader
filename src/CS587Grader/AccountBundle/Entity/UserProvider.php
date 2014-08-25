@@ -50,12 +50,14 @@ class UserProvider extends FOSUBUserProvider {
 		} catch ( AccountNotLinkedException $e ) {
 			$user = $this->userManager->createUser();
 			$user->setUsername( $response->getUsername() );
-			$user->setTokens(
-				$response->getAccessToken(),
-				$response->getTokenSecret(),
-				$response->getRefreshToken()
-			);
+			$user->addRole( 'ROLE_OAUTH_USER' );
 		}
+
+		$user->setTokens(
+			$response->getAccessToken(),
+			$response->getTokenSecret(),
+			$response->getRefreshToken()
+		);
 
 		return $user;
 	}

@@ -55,6 +55,7 @@ class CollectionCommand extends DoctrineCommand {
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$em = $this->getEntityManager( null );
+		$gradeRepo = $em->getRepository( 'CS587GraderSubmissionBundle:Grade' );
 
 		/** @var User[] $users */
 		$users = $em->getRepository( 'CS587GraderAccountBundle:User' )->findAll();
@@ -63,6 +64,15 @@ class CollectionCommand extends DoctrineCommand {
 			->findOneBy( [ 'name' => $input->getArgument( 'assignment' ) ] );
 
 		foreach ( $users as $user ) {
+			// Remove existing grade
+			/** @var Grade $grade */
+			$grade = $gradeRepo->findOneBy( [ 'user' => $user, 'assignment' => $assignment ] );
+			// Remove previous bad grades
+			if ( $grade && !$grade->getFileKey() && !$grade->getGrade() ) {
+				$em->remove( $grade );
+				$em->flush();
+			}
+
 			$this->collect( $assignment, $user );
 		}
 
@@ -86,14 +96,15 @@ class CollectionCommand extends DoctrineCommand {
 
 		// Get the commit associated with the assignment tag
 		try {
-			$res = $client->get( "repositories/{$user->getRepository()}/branches-tags" );
+			$res = $client->get(
+				"repositories/{$user->getUsername()}/{$user->getRepository()}/branches-tags" );
 		} catch ( ClientException $e ) {
-			return $this->assignZero( $assignment, $user, 'grade-norepo' );
+			return $this->assignZero( $assignment, $user, 'Non-existent Repository' );
 		}
 
 		$res = $res->json();
 		if ( !isset( $res['tags'] ) ) {
-			return $this->assignZero( $assignment, $user, 'grade-nosubmission' );
+			return $this->assignZero( $assignment, $user, 'Missing Assignment Tag' );
 		}
 
 		$commit = null;
@@ -104,14 +115,14 @@ class CollectionCommand extends DoctrineCommand {
 		}
 
 		if ( $commit === null ) {
-			return $this->assignZero( $assignment, $user, 'grade-nosubmission' );
+			return $this->assignZero( $assignment, $user, 'Missing Assignment Tag' );
 		}
 
-		$em = $this->getEntityManager( '' );
+		$em = $this->getEntityManager( null );
 		$job = new Job( 'cs587:grade', [ $assignment->getName(), $user->getUsername(), $commit ] );
 		$job->addRelatedEntity( $user );
 		$job->addRelatedEntity( $assignment );
-		$em->flush();
+		$em->persist( $job );
 
 		return null;
 	}

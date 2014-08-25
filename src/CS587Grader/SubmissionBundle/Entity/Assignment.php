@@ -110,4 +110,13 @@ class Assignment {
 	public function setDueDate( \DateTime $dueDate ) {
 		$this->dueDate = $dueDate;
 	}
+
+	/**
+	 * Get the list of submissions
+	 *
+	 * @return Grade[]|ArrayCollection
+	 */
+	public function getSubmissions() {
+		return $this->submissions;
+	}
 }

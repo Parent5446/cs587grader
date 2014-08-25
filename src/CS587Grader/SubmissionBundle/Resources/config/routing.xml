@@ -10,7 +10,13 @@
         <default key="_controller">CS587GraderSubmissionBundle:Default:edit</default>
         <default key="name" />
     </route>
-    <route id="cs587_grader_submission_admin" path="/admin/">
+    <route id="cs587_grader_submission_grade_edit" path="/admin/assignments/{assignment}/{user}">
+        <default key="_controller">CS587GraderSubmissionBundle:Default:editGrade</default>
+    </route>
+    <route id="cs587_grader_submission_grade_list" path="/admin/assignments/{name}">
+        <default key="_controller">CS587GraderSubmissionBundle:Default:listGrades</default>
+    </route>
+    <route id="cs587_grader_submission_admin" path="/admin/assignments">
         <default key="_controller">CS587GraderSubmissionBundle:Default:admin</default>
     </route>
     <route id="cs587_grader_submission_homepage" path="/">
