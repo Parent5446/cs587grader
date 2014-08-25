@@ -57,7 +57,6 @@ class DefaultController extends Controller
 			->getQuery()
 			->getResult();
 
-
 		return $this->render(
 			'CS587GraderSubmissionBundle:Default:index.html.twig',
 			[ 'assignments' => $res ]
@@ -174,6 +173,7 @@ class DefaultController extends Controller
 	/**
 	 * Edit a grade for a user
 	 *
+	 * @param \Symfony\Component\HttpFoundation\Request $request
 	 * @param Grade $grade
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response

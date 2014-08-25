@@ -24,13 +24,6 @@
         <import resource="config.xml"/>
     </imports>
 
-    <parameters>
-        <parameter key="router.options.matcher.cache_class">null</parameter>
-        <parameter key="router.options.matcher_class">
-            Symfony\Component\Routing\Matcher\ApacheUrlMatcher
-        </parameter>
-    </parameters>
-
     <framework:config>
             <framework:validation cache="apc" />
     </framework:config>
