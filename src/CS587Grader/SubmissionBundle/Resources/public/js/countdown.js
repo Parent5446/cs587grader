@@ -34,9 +34,9 @@
 
             value.text( timeRemaining );
         } );
-
-        setInterval( updateCountdowns, 1000 );
     }
 
-    $( document ).ready( updateCountdowns );
+    $( document ).ready( function () {
+        setInterval( updateCountdowns, 1000 );
+    } );
 }( jQuery ) );
