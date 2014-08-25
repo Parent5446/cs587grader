@@ -1,4 +1,3 @@
-<?php
 /**
  * This file is part of CS585Grader.
  *
@@ -20,17 +19,24 @@
  * @file
  * @author Tyler Romeo <tylerromeo@gmail.com>
  * @copyright 2013 Tyler Romeo
- * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Publi\
-c License
+ * @license https://www.gnu.org/licenses/agpl-3.0.html GNU Affero General Public License
  */
 
-require_once __DIR__.'/AppKernel.php';
+( function ( $ ) {
+    'use strict';
 
-use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
+    function updateCountdowns() {
+        $( '.cs587-countdown' ).each( function () {
+            var value = $( this ),
+                data = value.data(),
+                dueDate = moment( data.duedate ),
+                timeRemaining = dueDate.fromNow();
 
-/**
- * Reverse proxy cache (better to use Varnish, though)
- */
-class AppCache extends HttpCache
-{
-}
+            value.text( timeRemaining );
+        } );
+    }
+
+    $( document ).ready( function () {
+        setInterval( updateCountdowns, 1000 );
+    } );
+}( jQuery ) );

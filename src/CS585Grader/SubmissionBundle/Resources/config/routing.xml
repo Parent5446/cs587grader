@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<routes xmlns="http://symfony.com/schema/routing"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://symfony.com/schema/routing http://symfony.com/schema/routing/routing-1.0.xsd">
+
+    <import resource="@JMSJobQueueBundle/Controller/" type="annotation" prefix="/admin/jobs" />
+
+    <route id="cs587_grader_submission_edit" path="/admin/edit/{name}">
+        <default key="_controller">CS585GraderSubmissionBundle:Default:edit</default>
+        <default key="name" />
+    </route>
+    <route id="cs587_grader_submission_grade_edit" path="/admin/assignments/{assignment}/{user}">
+        <default key="_controller">CS585GraderSubmissionBundle:Default:editGrade</default>
+    </route>
+    <route id="cs587_grader_submission_grade_list" path="/admin/assignments/{name}">
+        <default key="_controller">CS585GraderSubmissionBundle:Default:listGrades</default>
+    </route>
+    <route id="cs587_grader_submission_admin" path="/admin/assignments">
+        <default key="_controller">CS585GraderSubmissionBundle:Default:admin</default>
+    </route>
+    <route id="cs587_grader_submission_homepage" path="/">
+        <default key="_controller">CS585GraderSubmissionBundle:Default:index</default>
+    </route>
+
+</routes>

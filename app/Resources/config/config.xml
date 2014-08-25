@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!--
-        * This file is part of the CS587Grader website.
+        * This file is part of the CS585Grader website.
         * Copyright 2014 Tyler Anthony Romeo
         *
-        * CS587Grader is free software: you can redistribute it and/or modify
+        * CS585Grader is free software: you can redistribute it and/or modify
         * it under the terms of the GNU Affero General Public License as published by
         * the Free Software Foundation, either version 3 of the License, or
         * (at your option) any later version.
@@ -30,7 +30,7 @@
     </imports>
 
     <parameters>
-        <parameter key="hwi_oauth.user.provider.fosub_bridge.class">CS587Grader\AccountBundle\Entity\UserProvider</parameter>
+        <parameter key="hwi_oauth.user.provider.fosub_bridge.class">CS585Grader\AccountBundle\Entity\UserProvider</parameter>
         <parameter key="jms_job_queue.statistics">false</parameter>
     </parameters>
 
@@ -88,7 +88,7 @@
 
     <fos-user:config db-driver="orm"
                      firewall-name="main"
-                     user-class="CS587Grader\AccountBundle\Entity\User" />
+                     user-class="CS585Grader\AccountBundle\Entity\User" />
 
     <hwi-oauth:config firewall-name="main">
         <hwi-oauth:fosub>
