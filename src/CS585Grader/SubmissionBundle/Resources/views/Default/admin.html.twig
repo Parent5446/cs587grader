@@ -8,7 +8,7 @@
 		<div class="panel-heading">Assignments</div>
 
 		<div class="panel-body">
-			<a class="btn btn-primary" href="{{ path( 'cs587_grader_submission_edit' ) }}">New</a>
+			<a class="btn btn-primary" href="{{ path( 'cs585_grader_submission_edit' ) }}">New</a>
 		</div>
 
 		<table class="table">
@@ -25,13 +25,13 @@
 			{% for assignment in assignments %}
 				<tr>
 					<td>{{ loop.index }}</td>
-					<td><a href="{{ path( 'cs587_grader_submission_edit', { 'name': assignment.name } ) }}">
+					<td><a href="{{ path( 'cs585_grader_submission_edit', { 'name': assignment.name } ) }}">
 						{{ assignment.name }}
 					</a></td>
 					<td>{{ assignment.description }}</td>
 					<td>{{ assignment.dueDate|date('c') }}</td>
 					<td>
-						<a href="{{ path( 'cs587_grader_submission_grade_list', { 'name': assignment.name } ) }}">
+						<a href="{{ path( 'cs585_grader_submission_grade_list', { 'name': assignment.name } ) }}">
 							{{ assignment.submissions|length }}
 						</a>
 					</td>

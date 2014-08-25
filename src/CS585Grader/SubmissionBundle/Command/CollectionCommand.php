@@ -45,7 +45,7 @@ class CollectionCommand extends DoctrineCommand {
 
 	protected function configure() {
 		$this
-			->setName( 'cs587:collect' )
+			->setName( 'cs585:collect' )
 			->setDescription( 'Download and auto-grade a student\'s application' )
 			->addArgument( 'assignment', InputArgument::REQUIRED, 'Name of assignment to grade' );
 	}
@@ -119,7 +119,7 @@ class CollectionCommand extends DoctrineCommand {
 		}
 
 		$em = $this->getEntityManager( null );
-		$job = new Job( 'cs587:grade', [ $assignment->getName(), $user->getUsername(), $commit ] );
+		$job = new Job( 'cs585:grade', [ $assignment->getName(), $user->getUsername(), $commit ] );
 		$job->addRelatedEntity( $user );
 		$job->addRelatedEntity( $assignment );
 		$em->persist( $job );

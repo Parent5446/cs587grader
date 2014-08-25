@@ -50,7 +50,7 @@ class GradeCommand extends DoctrineCommand
 
 	protected function configure() {
 		$this
-			->setName( 'cs587:grade' )
+			->setName( 'cs585:grade' )
 			->setDescription( 'Download and auto-grade a student\'s application' )
 			->addArgument( 'assignment', InputArgument::REQUIRED, 'Name of assignment to grade' )
 			->addArgument( 'user', InputArgument::REQUIRED, 'Name of student' )

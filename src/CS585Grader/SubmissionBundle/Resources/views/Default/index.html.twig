@@ -38,7 +38,7 @@
 					<td>{{ loop.index }}</td>
 					<td>{{ assignment.name }}</td>
 					<td>{{ assignment.dueDate|date('Y-m-d H:i:s') }}</td>
-					<td class="cs587-countdown" data-duedate="{{ assignment.dueDate|date('c') }}"></td>
+					<td class="cs585-countdown" data-duedate="{{ assignment.dueDate|date('c') }}"></td>
 					<td>
 						{% if assignment.submissions|length > 0 and assignment.submissions[0].grade != null %}
 							<div class="dropdown">

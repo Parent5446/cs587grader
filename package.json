@@ -9,10 +9,10 @@
     }],
     "repository": {
         "type": "git",
-        "url": "https://github.com/parent5446/cs587-grader"
+        "url": "https://github.com/parent5446/cs585-grader"
     },
     "bugs": {
-        "url": "https://github.com/parent5446/cs587-grader/issues"
+        "url": "https://github.com/parent5446/cs585-grader/issues"
     },
     "dependencies": {
         "uglify-js": "~2.4",

@@ -26,7 +26,7 @@
     'use strict';
 
     function updateCountdowns() {
-        $( '.cs587-countdown' ).each( function () {
+        $( '.cs585-countdown' ).each( function () {
             var value = $( this ),
                 data = value.data(),
                 dueDate = moment( data.duedate ),

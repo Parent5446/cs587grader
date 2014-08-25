@@ -6,7 +6,7 @@
   "description": "Grading application for CS-587",
   "main": "web/app.php",
   "license": "AGPL-3.0",
-  "homepage": "http://parent5446.us/cs587",
+  "homepage": "http://parent5446.us/cs585",
   "private": true,
   "ignore": [
     "**/.*",

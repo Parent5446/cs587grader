@@ -6,20 +6,20 @@
 
     <import resource="@JMSJobQueueBundle/Controller/" type="annotation" prefix="/admin/jobs" />
 
-    <route id="cs587_grader_submission_edit" path="/admin/edit/{name}">
-        <default key="_controller">CS585GraderSubmissionBundle:Default:edit</default>
-        <default key="name" />
+    <route id="cs585_grader_submission_edit" path="/admin/assignments/{name}/edit">
+        <default key="_controller">CS585GraderSubmissionBundle:Admin:edit</default>
+        <default key="name">new</default>
     </route>
-    <route id="cs587_grader_submission_grade_edit" path="/admin/assignments/{assignment}/{user}">
-        <default key="_controller">CS585GraderSubmissionBundle:Default:editGrade</default>
+    <route id="cs585_grader_submission_grade_edit" path="/admin/assignments/{assignment}/grades/{user}">
+        <default key="_controller">CS585GraderSubmissionBundle:Admin:editGrade</default>
     </route>
-    <route id="cs587_grader_submission_grade_list" path="/admin/assignments/{name}">
-        <default key="_controller">CS585GraderSubmissionBundle:Default:listGrades</default>
+    <route id="cs585_grader_submission_grade_list" path="/admin/assignments/{name}">
+        <default key="_controller">CS585GraderSubmissionBundle:Admin:listGrades</default>
     </route>
-    <route id="cs587_grader_submission_admin" path="/admin/assignments">
-        <default key="_controller">CS585GraderSubmissionBundle:Default:admin</default>
+    <route id="cs585_grader_submission_admin" path="/admin/assignments">
+        <default key="_controller">CS585GraderSubmissionBundle:Admin:admin</default>
     </route>
-    <route id="cs587_grader_submission_homepage" path="/">
+    <route id="cs585_grader_submission_homepage" path="/">
         <default key="_controller">CS585GraderSubmissionBundle:Default:index</default>
     </route>
 

@@ -30,7 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 $loader = require_once __DIR__.'/../app/bootstrap.php.cache';
 
 // Use APC for autoloading to improve performance.
-$apcLoader = new ApcClassLoader( 'cs587', $loader );
+$apcLoader = new ApcClassLoader( 'cs585', $loader );
 $loader->unregister();
 $apcLoader->register( true );
 
