@@ -27,7 +27,7 @@
 				<th>Time Remaining</th>
 				<th>Grade</th>
 				<th>Grade Reason</th>
-				{% if is_granted( 'ROLE_OAUTH_USER' ) %}
+				{% if not is_granted( 'ROLE_OAUTH_USER' ) %}
 					<th>Manual Submit</th>
 				{% endif %}
 			</tr>
@@ -61,7 +61,10 @@
 					</td>
 					{% if not is_granted( 'ROLE_OAUTH_USER' ) and assignment.submissions|length == 0 %}
 						<td>
-							<a class="btn btn-primary" href="#">Manual Submit</a>
+							<a class="btn btn-primary"
+							   href="{{ path('cs585_grader_submission_submit', { 'name': assignment.name }) }}">
+								Manual Submit
+							</a>
 						</td>
 					{% endif %}
 				</tr>

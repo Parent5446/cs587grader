@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+        * This file is part of the CS585Grader website.
+        * Copyright 2014 Tyler Anthony Romeo
+        *
+        * CS585Grader is free software: you can redistribute it and/or modify
+        * it under the terms of the GNU Affero General Public License as published by
+        * the Free Software Foundation, either version 3 of the License, or
+        * (at your option) any later version.
+        *
+        * Foobar is distributed in the hope that it will be useful,
+        * but WITHOUT ANY WARRANTY; without even the implied warranty of
+        * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+        * GNU Affero General Public License for more details.
+        *
+        * You should have received a copy of the GNU Affero General Public License
+        * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
+-->
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:twig="http://symfony.com/schema/dic/twig"
+           xmlns:framework="http://symfony.com/schema/dic/symfony"
+           xmlns:doctrine="http://symfony.com/schema/dic/doctrine"
+           xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer"
+           xmlns:assetic="http://symfony.com/schema/dic/assetic"
+           xmlns:fos-user="http://example.org/schema/dic/fos_user"
+           xmlns:hwi-oauth="http://example.org/schema/dic/hwi_oauth">
+    <parameters>
+        <parameter type="string" key="cs585grader.submission.uploaddir">%kernel.root_dir%/uploads</parameter>
+    </parameters>
+    <services>
+        <service id="cs585grader.submission.form.type.filesubmission"
+                 class="CS585Grader\SubmissionBundle\Form\Type\FileSubmissionType">
+            <argument type="string">%cs585grader.submission.uploaddir%</argument>
+            <tag name="form.type" alias="cs587_submission" />
+        </service>
+    </services>
+</container>

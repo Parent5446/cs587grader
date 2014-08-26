@@ -72,7 +72,7 @@ class AdminController extends Controller {
 		}
 
 		if ( !$assignment ) {
-			$assignment = new Assignment( $name );
+			$assignment = new Assignment( $name !== 'new' ? $name : '' );
 		}
 
 		$form = $this->createFormBuilder( $assignment )

@@ -19,6 +19,9 @@
     <route id="cs585_grader_submission_admin" path="/admin/assignments">
         <default key="_controller">CS585GraderSubmissionBundle:Admin:admin</default>
     </route>
+    <route id="cs585_grader_submission_submit" path="/submit/{name}">
+        <default key="_controller">CS585GraderSubmissionBundle:Default:submit</default>
+    </route>
     <route id="cs585_grader_submission_homepage" path="/">
         <default key="_controller">CS585GraderSubmissionBundle:Default:index</default>
     </route>

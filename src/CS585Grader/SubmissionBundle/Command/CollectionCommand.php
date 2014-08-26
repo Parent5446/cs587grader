@@ -64,16 +64,14 @@ class CollectionCommand extends DoctrineCommand {
 			->findOneBy( [ 'name' => $input->getArgument( 'assignment' ) ] );
 
 		foreach ( $users as $user ) {
-			// Remove existing grade
 			/** @var Grade $grade */
 			$grade = $gradeRepo->findOneBy( [ 'user' => $user, 'assignment' => $assignment ] );
-			// Remove previous bad grades
-			if ( $grade && !$grade->getFileKey() && !$grade->getGrade() ) {
-				$em->remove( $grade );
-				$em->flush();
+			if ( !$grade ) {
+				$grade = new Grade( $assignment, $user, null );
+				$em->persist( $grade );
 			}
 
-			$this->collect( $assignment, $user );
+			$this->collect( $grade );
 		}
 
 		$em->flush();
@@ -82,13 +80,12 @@ class CollectionCommand extends DoctrineCommand {
 	/**
 	 * Get the commit for a given user and trigger a job to grade it
 	 *
-	 * @param Assignment $assignment
-	 * @param User $user
-	 *
-	 * @return null
+	 * @param Grade $grade
 	 */
-	private function collect( Assignment $assignment, User $user ) {
+	private function collect( Grade $grade ) {
 		$di = $this->getContainer();
+		$user = $grade->getUser();
+		$assignment = $grade->getAssignment();
 		$client = $user->getBitbucketClient(
 			$di->getParameter( 'bitbucket_id' ),
 			$di->getParameter( 'bitbucket_secret' )
@@ -97,25 +94,33 @@ class CollectionCommand extends DoctrineCommand {
 		// Get the commit associated with the assignment tag
 		try {
 			$res = $client->get(
-				"repositories/{$user->getUsername()}/{$user->getRepository()}/branches-tags" );
+				"repositories/{$user->getUsername()}/{$user->getRepository()}/tags" );
 		} catch ( ClientException $e ) {
-			return $this->assignZero( $assignment, $user, 'Non-existent Repository' );
-		}
+			$grade->setGrade( 0 );
+			$grade->setGradeReason( 'Non-existent Repository' );
 
-		$res = $res->json();
-		if ( !isset( $res['tags'] ) ) {
-			return $this->assignZero( $assignment, $user, 'Missing Assignment Tag' );
+			return;
 		}
 
 		$commit = null;
-		foreach ( $res['tags'] as $tag ) {
-			if ( $tag['name'] === $assignment->getName() ) {
-				$commit = $tag['changeset'];
+		$dateTime = null;
+		foreach ( $res->json() as $name => $tag ) {
+			if ( $name === $assignment->getName() ) {
+				$commit = $tag['node'];
+				$dateTime = new \DateTime( $tag['utctimestamp'], new \DateTimeZone( 'UTC' ) );
 			}
 		}
 
 		if ( $commit === null ) {
-			return $this->assignZero( $assignment, $user, 'Missing Assignment Tag' );
+			$grade->setGrade( 0 );
+			$grade->setGradeReason( 'Missing Assignment Tag' );
+
+			return;
+		} elseif ( $dateTime > $assignment->getDueDate() ) {
+			$grade->setGrade( 0 );
+			$grade->setGradeReason( 'Submitted Late' );
+
+			return;
 		}
 
 		$em = $this->getEntityManager( null );
@@ -123,25 +128,5 @@ class CollectionCommand extends DoctrineCommand {
 		$job->addRelatedEntity( $user );
 		$job->addRelatedEntity( $assignment );
 		$em->persist( $job );
-
-		return null;
-	}
-
-	/**
-	 * Assign a zero to a student for the assignment
-	 *
-	 * @param Assignment $assignment
-	 * @param User $user
-	 * @param string $message
-	 *
-	 * @return null
-	 */
-	private function assignZero( Assignment $assignment, User $user, $message ) {
-		$grade = new Grade( $assignment, $user, 0, $message );
-
-		$em = $this->getEntityManager( null );
-		$em->persist( $grade );
-
-		return null;
 	}
 }

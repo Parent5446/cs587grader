@@ -63,4 +63,34 @@ class DefaultController extends Controller
 		);
 	}
 
+	/**
+	 * Action for users to manually submit their assignments
+	 *
+	 * @param Request $request
+	 * @param Assignment $assignment
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function submitAction( Request $request, Assignment $assignment ) {
+		$grade = new Grade( $assignment, $this->getUser(), 'Submitted' );
+		$form = $this->createFormBuilder( $grade )
+			->add( 'file', 'cs587_submission', [ 'assignment' => $assignment, 'user' => $this->getUser() ] )
+			->add( 'submit', 'submit' )
+			->getForm();
+
+		$form->handleRequest( $request );
+		if ( $form->isValid() ) {
+			$grade->setFile( $form->get( 'file' )->getData() );
+			$em = $this->getDoctrine()->getManager();
+			$em->persist( $grade );
+			$em->flush();
+
+			return $this->redirect( $this->generateUrl( 'cs585_grader_submission_homepage' ) );
+		}
+
+		return $this->render(
+			'CS585GraderSubmissionBundle:Default:submit.html.twig',
+			[ 'form' => $form->createView() ]
+		);
+	}
 }

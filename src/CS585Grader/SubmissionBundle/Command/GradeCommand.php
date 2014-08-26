@@ -35,6 +35,7 @@ use CS585Grader\AccountBundle\Entity\User;
 use CS585Grader\SubmissionBundle\Entity\Assignment;
 use CS585Grader\SubmissionBundle\Entity\Grade;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Command to calculate a preliminary grade for an assignment
@@ -70,16 +71,16 @@ class GradeCommand extends DoctrineCommand
 		$assignment = $em->getRepository( 'CS585GraderSubmissionBundle:Assignment' )
 			->findOneBy( [ 'name' => $input->getArgument( 'assignment' ) ] );
 
-		// Remove existing grade
+		/** @var Grade $grade */
 		$grade = $this->getEntityManager( null )->getRepository( 'CS585GraderSubmissionBundle:Grade' )
 			->findOneBy( [ 'user' => $user, 'assignment' => $assignment ] );
-		if ( $grade ) {
-			$em->remove( $grade );
-			$em->flush();
+		if ( !$grade ) {
+			$grade = new Grade( $assignment, $user, null );
+			$em->persist( $grade );
 		}
 
-		$grade = $this->grade( $user, $assignment, $input->getArgument( 'commit' ) );
-		$em->persist( $grade );
+		$this->grade( $grade, $input->getArgument( 'commit' ) );
+
 		$em->flush();
 	}
 
@@ -90,46 +91,45 @@ class GradeCommand extends DoctrineCommand
 	 * VM. If it fails in any way, give a zero. Otherwise, leave it
 	 * ungraded.
 	 *
-	 * @param User $user
-	 * @param Assignment $assignment
+	 * @param \CS585Grader\SubmissionBundle\Entity\Grade $grade
 	 * @param string $commit
 	 *
 	 * @throws \RuntimeException if working directory cannot be made
-	 * @return Grade
 	 */
-	private function grade( User $user, Assignment $assignment, $commit ) {
+	private function grade( Grade $grade, $commit ) {
 		$fs = new Filesystem();
-		$di = $this->getContainer();
-		$client = $user->getBitbucketClient(
-			$di->getParameter( 'bitbucket_id' ),
-			$di->getParameter( 'bitbucket_secret' )
-		);
 
-		// Setup temporary directory
-		$uploadsDir = $di->getParameter( 'kernel.root_dir' ) . DIRECTORY_SEPARATOR . 'uploads';
-		$workingDir = $uploadsDir . DIRECTORY_SEPARATOR . 'tmp';
-		$repoDir = $workingDir . DIRECTORY_SEPARATOR
-			. $user->getUsername() . '-' . $user->getRepository() . '-' . substr( $commit, 0, 12 );
-		$fs->mkdir( $workingDir, 0700 );
-
-		$key = "{$user->getUsername()}-{$assignment->getName()}";
-		$filename = "$uploadsDir/$key.tar.gz";
-
-		// Fetch the tarball for the commit
-		try {
-			$client->get(
-				"https://bitbucket.org/{$user->getUsername()}/{$user->getRepository()}/get/$commit.tar.gz",
-				[ 'save_to' => $filename ]
-			);
-		} catch ( ClientException $e ) {
-			return new Grade( $assignment, $user, null, 'Download Error' );
+		if ( !is_object( $grade->getFile() ) ) {
+			$this->downloadFromBitbucket( $grade, $commit );
 		}
 
+		// Setup temporary directory
+		$uploadsDir = $this->getContainer()->getParameter( 'cs585grader.submission.uploaddir' );
+		$workingDir = $uploadsDir . DIRECTORY_SEPARATOR . 'tmp';
+		$fs->mkdir( $workingDir, 0700 );
+
 		// Unzip the tarball into temp directory
-		$gzip = proc_open( 'tar xzf ' . escapeshellarg( $filename ), [], $pipes, $workingDir );
+		$gzip = proc_open(
+			'tar xzf ' . escapeshellarg( $grade->getFile()->getPathname() ),
+			[], $pipes, $workingDir
+		);
 		$status = proc_close( $gzip );
 		if ( $status !== 0 ) {
-			throw new \RuntimeException( 'Could not extract tarball.' );
+			$grade->setGradeReason( 'Extraction Error' );
+
+			return;
+		}
+
+		$repoDir = $workingDir;
+		// If Makefile is not in root dir, the repository might have been put into
+		// a top-level directory. Try changing into first directory and go from there
+		if ( !file_exists( "$repoDir/Makefile" ) ) {
+			/** @var \DirectoryIterator $fileInfo */
+			foreach ( new \DirectoryIterator( $workingDir ) as $fileInfo ) {
+				if ( $fileInfo->isDir() && !$fileInfo->isDot() ) {
+					$repoDir = $fileInfo->getPathname();
+				}
+			}
 		}
 
 		// Compile
@@ -149,7 +149,9 @@ class GradeCommand extends DoctrineCommand
 		);
 
 		if ( !is_resource( $make ) ) {
-			throw new \RuntimeException( 'Could not launch compilation process' );
+			$grade->setGradeReason( 'Internal Compilation Error' );
+
+			return;
 		}
 
 		// Extract all stdout and stderr
@@ -168,20 +170,45 @@ class GradeCommand extends DoctrineCommand
 		$status = proc_close( $make );
 
 		// Check for compile failure
-		/** @var Grade $grade */
-		$grade = null;
 		if ( $status !== 0 ) {
-			$grade = new Grade( $assignment, $user, 0, 'Compilation Failed' );
-			$grade->setFileKey( $key );
+			$grade->setGrade( 0 );
+			$grade->setGradeReason( 'Compilation Failed' );
 			$grade->setGradeExtendedReason( "$output\n$error" );
 		} else {
-			$grade = new Grade( $assignment, $user, null, 'Awaiting Review' );
-			$grade->setFileKey( $key );
+			$grade->setGradeReason( 'Awaiting Review' );
 		}
 
 		// Cleanup
 		$fs->remove( $workingDir );
+	}
 
-		return $grade;
+	/**
+	 * Download an assignment from BitBucket
+	 *
+	 * @param Grade $grade Grade to retrieve for
+	 * @param string $commit Commit to download
+	 */
+	private function  downloadFromBitbucket( Grade $grade, $commit ) {
+		$di = $this->getContainer();
+		$user = $grade->getUser();
+		$client = $user->getBitbucketClient(
+			$di->getParameter( 'bitbucket_id' ),
+			$di->getParameter( 'bitbucket_secret' )
+		);
+
+		$filename = $di->getParameter( 'cs585grader.submission.uploaddir' )
+			. '/' . $user->getUsername() . '-' . $grade->getAssignment()->getName() . '.tar.gz';
+
+		// Fetch the tarball for the commit
+		try {
+			$client->get(
+				"https://bitbucket.org/{$user->getUsername()}/{$user->getRepository()}/get/$commit.tar.gz",
+				[ 'save_to' => $filename ]
+			);
+		} catch ( ClientException $e ) {
+			return;
+		}
+
+		$grade->setFile( new File( $filename ) );
 	}
 }

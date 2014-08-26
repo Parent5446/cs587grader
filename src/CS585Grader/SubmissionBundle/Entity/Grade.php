@@ -27,6 +27,9 @@ c License
 namespace CS585Grader\SubmissionBundle\Entity;
 
 use CS585Grader\AccountBundle\Entity\User;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 /**
  * Represents a student's grade on a given assignment
@@ -45,6 +48,9 @@ class Grade {
 
 	/** @var string|null File key/name */
 	protected $fileKey;
+
+	/** @var File */
+	protected $file;
 
 	/** @var string|null Reason for the grade (message key) */
 	protected $reason;
@@ -144,24 +150,29 @@ class Grade {
 	}
 
 	/**
-	 * Set the file key where the submission is stored
+	 * Get the file for the assignment
 	 *
-	 * @param string $fileKey
-	 *
-	 * @return $this
+	 * @return File|null
 	 */
-	public function setFileKey( $fileKey ) {
-		$this->fileKey = $fileKey;
+	public function getFile() {
+		if ( !is_object( $this->file ) ) {
+			try {
+				$this->file = new File( $this->fileKey );
+			} catch ( FileNotFoundException $e ) {
+				$this->file = false;
+			}
+		}
 
-		return $this;
+		return $this->file ?: null;
 	}
 
 	/**
-	 * Get the file key, if it exists
+	 * Set the uploaded file
 	 *
-	 * @return null|string
+	 * @param File|null $file
 	 */
-	public function getFileKey() {
-		return $this->fileKey;
+	public function setFile( File $file = null ) {
+		$this->file = $file;
+		$this->fileKey = $file ? $file->getPathname() : null;
 	}
 }
