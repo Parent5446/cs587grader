@@ -27,9 +27,8 @@ c License
 namespace CS585Grader\SubmissionBundle\Entity;
 
 use CS585Grader\AccountBundle\Entity\User;
-use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\File;
 
 /**
  * Represents a student's grade on a given assignment

@@ -59,14 +59,14 @@
 							{{ assignment.submissions[0].gradeReason|trans }}
 						{% endif %}
 					</td>
-					{% if not is_granted( 'ROLE_OAUTH_USER' ) and assignment.submissions|length == 0 %}
-						<td>
+					<td>
+						{% if not is_granted( 'ROLE_OAUTH_USER' ) and assignment.submissions|length == 0 %}
 							<a class="btn btn-primary"
 							   href="{{ path('cs585_grader_submission_submit', { 'name': assignment.name }) }}">
 								Manual Submit
 							</a>
-						</td>
-					{% endif %}
+						{% endif %}
+					</td>
 				</tr>
 			{% endfor %}
 			</tbody>

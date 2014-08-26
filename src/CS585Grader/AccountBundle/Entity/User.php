@@ -29,8 +29,8 @@ namespace CS585Grader\AccountBundle\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use FOS\UserBundle\Entity\User as BaseUser;
-use GuzzleHttp\Subscriber\Oauth\Oauth1 as GuzzleOauth1;
 use GuzzleHttp\Client as GuzzleClient;
+use GuzzleHttp\Subscriber\Oauth\Oauth1 as GuzzleOauth1;
 
 /**
  * Entity representing a Stevens student or faculty and associated

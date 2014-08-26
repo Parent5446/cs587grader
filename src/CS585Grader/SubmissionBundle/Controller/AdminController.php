@@ -50,7 +50,7 @@ class AdminController extends Controller {
 			->findAll();
 
 		return $this->render(
-			'CS585GraderSubmissionBundle:Default:admin.html.twig',
+			'CS585GraderSubmissionBundle:Admin:admin.html.twig',
 			[ 'assignments' => $assignments ]
 		);
 	}
@@ -127,7 +127,7 @@ class AdminController extends Controller {
 		}
 
 		return $this->render(
-			'CS585GraderSubmissionBundle:Default:edit.html.twig',
+			'CS585GraderSubmissionBundle:Admin:edit.html.twig',
 			[ 'form' => $form->createView() ]
 		);
 	}
@@ -141,7 +141,7 @@ class AdminController extends Controller {
 	 */
 	public function listGradesAction( Assignment $assignment ) {
 		return $this->render(
-			'CS585GraderSubmissionBundle:Default:listGrades.html.twig',
+			'CS585GraderSubmissionBundle:Admin:listGrades.html.twig',
 			[ 'assignment' => $assignment ]
 		);
 	}
@@ -174,7 +174,7 @@ class AdminController extends Controller {
 		}
 
 		return $this->render(
-			'CS585GraderSubmissionBundle:Default:editGrade.html.twig',
+			'CS585GraderSubmissionBundle:Admin:editGrade.html.twig',
 			[ 'grade' => $grade, 'form' => $form->createView() ]
 		);
 	}

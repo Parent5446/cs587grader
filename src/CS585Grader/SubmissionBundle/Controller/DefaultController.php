@@ -25,12 +25,11 @@
 
 namespace CS585Grader\SubmissionBundle\Controller;
 
+use CS585Grader\SubmissionBundle\Entity\Assignment;
 use CS585Grader\SubmissionBundle\Entity\Grade;
-use JMS\JobQueueBundle\Entity\Job;
+use Doctrine\ORM\Query\Expr;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
-use CS585Grader\SubmissionBundle\Entity\Assignment;
-use Doctrine\ORM\Query\Expr;
 
 /**
  * Main controller that provides logic for submitting assignments

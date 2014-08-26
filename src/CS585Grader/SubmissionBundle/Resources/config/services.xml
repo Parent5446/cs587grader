@@ -16,14 +16,7 @@
         * You should have received a copy of the GNU Affero General Public License
         * along with Foobar.  If not, see <http://www.gnu.org/licenses/>.
 -->
-<container xmlns="http://symfony.com/schema/dic/services"
-           xmlns:twig="http://symfony.com/schema/dic/twig"
-           xmlns:framework="http://symfony.com/schema/dic/symfony"
-           xmlns:doctrine="http://symfony.com/schema/dic/doctrine"
-           xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer"
-           xmlns:assetic="http://symfony.com/schema/dic/assetic"
-           xmlns:fos-user="http://example.org/schema/dic/fos_user"
-           xmlns:hwi-oauth="http://example.org/schema/dic/hwi_oauth">
+<container xmlns="http://symfony.com/schema/dic/services">
     <parameters>
         <parameter type="string" key="cs585grader.submission.uploaddir">%kernel.root_dir%/uploads</parameter>
     </parameters>

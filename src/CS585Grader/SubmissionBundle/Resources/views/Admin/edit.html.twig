@@ -1,10 +1,10 @@
 {% extends '::layout.html.twig' %}
 
+{% block title %}Edit Assignment{% endblock %}
+
 {% block nav_page_admin %}active{% endblock %}
 {% block nav_page_admin_assignments %}active{% endblock %}
 
 {% block content %}
-	<h1>Grade for {{ grade.user.username }} on {{ grade.assignment.name }}</h1>
-
-	{{ form(form) }}
+{{ form(form) }}
 {% endblock %}

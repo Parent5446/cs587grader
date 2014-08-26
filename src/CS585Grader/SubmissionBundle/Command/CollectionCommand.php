@@ -26,15 +26,15 @@ c License
 
 namespace CS585Grader\SubmissionBundle\Command;
 
+use CS585Grader\AccountBundle\Entity\User;
+use CS585Grader\SubmissionBundle\Entity\Assignment;
+use CS585Grader\SubmissionBundle\Entity\Grade;
 use Doctrine\Bundle\DoctrineBundle\Command\DoctrineCommand;
 use GuzzleHttp\Exception\ClientException;
 use JMS\JobQueueBundle\Entity\Job;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use CS585Grader\AccountBundle\Entity\User;
-use CS585Grader\SubmissionBundle\Entity\Assignment;
-use CS585Grader\SubmissionBundle\Entity\Grade;
 
 /**
  * Command to collect all assignments and initiate jobs for grading
