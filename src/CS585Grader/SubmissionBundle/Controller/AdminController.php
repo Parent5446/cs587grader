@@ -110,9 +110,10 @@ class AdminController extends Controller {
 				if ( !$job ) {
 					$job = new Job( 'cs585:collect', [ $assignment->getName() ] );
 					$job->addRelatedEntity( $assignment );
-					$em->persist( $job );
 				}
+
 				$job->setExecuteAfter( $assignment->getDueDate() );
+				$em->persist( $job );
 			} elseif ( $button->getName() === 'delete' ) {
 				// User wants to delete
 				if ( $job ) {

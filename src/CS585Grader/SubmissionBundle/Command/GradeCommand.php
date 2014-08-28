@@ -173,10 +173,10 @@ class GradeCommand extends DoctrineCommand
 		if ( $status !== 0 ) {
 			$grade->setGrade( 0 );
 			$grade->setGradeReason( 'Compilation Failed' );
-			$grade->setGradeExtendedReason( "$output\n$error" );
 		} else {
 			$grade->setGradeReason( 'Awaiting Review' );
 		}
+		$grade->setGradeExtendedReason( "$error\n$output" );
 
 		// Cleanup
 		$fs->remove( $workingDir );

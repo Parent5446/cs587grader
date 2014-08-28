@@ -1,5 +1,7 @@
 {% extends '::layout.html.twig' %}
 
+{% block title %}Home{% endblock %}
+
 {% block nav_page_home %}active{% endblock %}
 
 {% block javascripts %}
@@ -47,7 +49,7 @@
 									<span class="caret"></span>
 								</button>
 								<ul class="dropdown-menu">
-									<li>{{ assignment.submissions[0].gradeExtendedReason }}</li>
+									<li>{{ assignment.submissions[0].gradeExtendedReason|nl2br }}</li>
 								</ul>
 							</div>
 						{% else %}
