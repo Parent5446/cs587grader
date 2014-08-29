@@ -24,7 +24,8 @@
         "guzzlehttp/guzzle": "~4.2",
         "guzzlehttp/oauth-subscriber": "0.1.2",
         "jms/job-queue-bundle": "dev-master",
-        "pagerfanta/pagerfanta": "dev-master"
+        "pagerfanta/pagerfanta": "dev-master",
+        "nelmio/security-bundle": "1.4.0"
     },
     "require-dev": {
         "sensio/generator-bundle": "~2.3",

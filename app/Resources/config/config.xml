@@ -23,7 +23,8 @@
            xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer"
            xmlns:assetic="http://symfony.com/schema/dic/assetic"
            xmlns:fos-user="http://example.org/schema/dic/fos_user"
-           xmlns:hwi-oauth="http://example.org/schema/dic/hwi_oauth">
+           xmlns:hwi-oauth="http://example.org/schema/dic/hwi_oauth"
+           xmlns:nelmio-security="http://example.org/schema/dic/nelmio_security">
     <imports>
         <import resource="parameters.yml"/>
         <import resource="security.yml" />
@@ -102,4 +103,18 @@
                                   client-id="%bitbucket_id%"
                                   client-secret="%bitbucket_secret%" />
     </hwi-oauth:config>
+
+    <nelmio-security:config>
+        <nelmio-security:csp report-uri="/nelmio/csp/report">
+            <nelmio-security:default>
+                <nelmio-security:default>self</nelmio-security:default>
+            </nelmio-security:default>
+        </nelmio-security:csp>
+        <nelmio-security:clickjacking>
+            <nelmio-security:paths>
+                <nelmio-security:path pattern="^/.*">DENY</nelmio-security:path>
+            </nelmio-security:paths>
+        </nelmio-security:clickjacking>
+        <nelmio-security:content-type nosniff="true" />
+    </nelmio-security:config>
 </container>

@@ -49,6 +49,7 @@ class AppKernel extends Kernel
 			new JMS\DiExtraBundle\JMSDiExtraBundle( $this ),
 			new JMS\AopBundle\JMSAopBundle(),
 			new JMS\JobQueueBundle\JMSJobQueueBundle(),
+			new \Nelmio\SecurityBundle\NelmioSecurityBundle(),
 			new FOS\UserBundle\FOSUserBundle(),
 			new HWI\Bundle\OAuthBundle\HWIOAuthBundle(),
 			new CS585Grader\AccountBundle\CS585GraderAccountBundle(),
