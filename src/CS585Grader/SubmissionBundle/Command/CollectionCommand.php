@@ -71,18 +71,32 @@ class CollectionCommand extends DoctrineCommand {
 				$em->persist( $grade );
 			}
 
-			$this->collect( $grade );
+			$commit = $this->getCommit( $grade );
+
+			if ( $commit ) {
+				$job = new Job( 'cs585:grade', [ $assignment->getName(), $user->getUsername(), $commit ] );
+				$job->addRelatedEntity( $user );
+				$job->addRelatedEntity( $assignment );
+				$em->persist( $job );
+			}
 		}
 
 		$em->flush();
 	}
 
 	/**
-	 * Get the commit for a given user and trigger a job to grade it
+	 * Get the commit for a given user
 	 *
 	 * @param Grade $grade
+	 *
+	 * @return string|null Commit ID
 	 */
-	private function collect( Grade $grade ) {
+	private function getCommit( Grade $grade ) {
+		// Cut out early for manual submissions
+		if ( $grade->getFile() !== null ) {
+			return 'manual';
+		}
+
 		$di = $this->getContainer();
 		$user = $grade->getUser();
 		$assignment = $grade->getAssignment();
@@ -99,7 +113,7 @@ class CollectionCommand extends DoctrineCommand {
 			$grade->setGrade( 0 );
 			$grade->setGradeReason( 'Non-existent Repository' );
 
-			return;
+			return null;
 		}
 
 		$commit = null;
@@ -115,18 +129,14 @@ class CollectionCommand extends DoctrineCommand {
 			$grade->setGrade( 0 );
 			$grade->setGradeReason( 'Missing Assignment Tag' );
 
-			return;
+			return null;
 		} elseif ( $dateTime > $assignment->getDueDate() ) {
 			$grade->setGrade( 0 );
 			$grade->setGradeReason( 'Submitted Late' );
 
-			return;
+			return null;
 		}
 
-		$em = $this->getEntityManager( null );
-		$job = new Job( 'cs585:grade', [ $assignment->getName(), $user->getUsername(), $commit ] );
-		$job->addRelatedEntity( $user );
-		$job->addRelatedEntity( $assignment );
-		$em->persist( $job );
+		return $commit;
 	}
 }
