@@ -15,6 +15,7 @@
 				<th>Username</th>
 				<th>Real Name</th>
 				<th>Repository</th>
+				<th>Actions</th>
 			</tr>
 			</thead>
 			<tbody>
@@ -24,6 +25,12 @@
 					<td>{{ user.username }}</td>
 					<td>{{ user.realName }}</td>
 					<td>{{ user.repository }}</td>
+					<td>
+						<a class="btn btn-danger"
+						   href="{{ path( 'cs585_grader_account_userdelete', { 'id': user.id } ) }}">
+							{{ 'Delete'|trans }}
+						</a>
+					</td>
 				</tr>
 			{% endfor %}
 			</tbody>

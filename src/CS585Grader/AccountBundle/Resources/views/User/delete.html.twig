@@ -1,0 +1,11 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %}Delete User{% endblock %}
+
+{% block nav_page_admin_profile %}active{% endblock %}
+
+{% block content %}
+	<h1>Deleting {{ user.username }} ({{ user.realName }})</h1>
+	<p>Are you sure?</p>
+	{{ form(form) }}
+{% endblock %}

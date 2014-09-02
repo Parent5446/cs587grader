@@ -26,7 +26,9 @@ c License
 
 namespace CS585Grader\AccountBundle\Controller;
 
+use CS585Grader\AccountBundle\Entity\User;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Controller that allows manipulation of users
@@ -43,5 +45,32 @@ class UserController extends Controller {
 		return $this->render( 'CS585GraderAccountBundle:User:list.html.twig',
 			[ 'users' =>
 				$this->getDoctrine()->getRepository( 'CS585GraderAccountBundle:User' )->findAll() ] );
+	}
+
+	/**
+	 * Delete a user, providing a form to confirm
+	 *
+	 * @param Request $request
+	 * @param User $user
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function deleteAction( Request $request, User $user ) {
+		$form = $this->createFormBuilder( $user )
+			->add( 'delete', 'submit' )
+			->getForm();
+
+		$form->handleRequest( $request );
+		if ( $form->isValid() ) {
+			$em = $this->getDoctrine()->getManager();
+			$em->remove( $user );
+			$em->flush();
+
+			return $this->redirect( $this->generateUrl( 'cs585_grader_account_userlist' ) );
+		}
+
+		return $this->render( 'CS585GraderAccountBundle:User:delete.html.twig',
+			[ 'user' => $user, 'form' => $form->createView() ]
+		);
 	}
 }

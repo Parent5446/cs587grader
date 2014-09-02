@@ -12,8 +12,11 @@
         <field name="extendedReason" type="blob" nullable="true" />
 
         <many-to-one target-entity="CS585Grader\SubmissionBundle\Entity\Assignment" field="assignment" inversed-by="submissions">
+            <cascade><cascade-all/></cascade>
             <join-column referenced-column-name="name" />
         </many-to-one>
-        <many-to-one target-entity="CS585Grader\AccountBundle\Entity\User" field="user" />
+        <many-to-one target-entity="CS585Grader\AccountBundle\Entity\User" field="user">
+            <cascade><cascade-all/></cascade>
+        </many-to-one>
     </entity>
 </doctrine-mapping>
