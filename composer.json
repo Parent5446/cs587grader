@@ -11,7 +11,9 @@
         "symfony/symfony": "~2.5",
         "symfony/console": "~2.5",
         "doctrine/orm": "~2.2,>=2.2.3",
+        "doctrine/migrations": "1.0.x-dev",
         "doctrine/doctrine-bundle": "~1.2",
+        "doctrine/doctrine-migrations-bundle": "2.1.x-dev"
         "twig/extensions": "~1.0",
         "symfony/assetic-bundle": "~2.3",
         "symfony/swiftmailer-bundle": "~2.3",

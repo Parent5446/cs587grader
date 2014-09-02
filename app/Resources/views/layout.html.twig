@@ -35,6 +35,8 @@
 						<ul class="dropdown-menu">
 							<li class="{% block nav_page_admin_assignments %}{% endblock %}">
 								<a href="{{ path('cs585_grader_submission_admin') }}">Assignments</a></li>
+							<li class="{% block nav_page_admin_users %}{% endblock %}">
+								<a href="{{ path('cs585_grader_account_userlist') }}">Users</a></li>
 
 							{% if is_granted( 'ROLE_SUPER_ADMIN' ) %}
 								<li class="{% block nav_page_admin_jobqueue %}{% endblock %}">
@@ -42,7 +44,6 @@
 							{% endif %}
 						</ul>
 					</li>
-
 				{% endif %}
 
 				{% if is_granted( 'ROLE_USER' ) %}

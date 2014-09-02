@@ -18,6 +18,10 @@
 -->
 <container xmlns="http://symfony.com/schema/dic/services">
     <services>
+        <service id="cs585grader.account.userprovider"
+                 class="CS585Grader\AccountBundle\Entity\UserProvider">
+            <argument type="service" id="fos_user.user_manager" />
+        </service>
         <service id="cs585grader.account.securitylistener"
                  class="CS585Grader\AccountBundle\Listener\SecurityHeadersListener">
             <tag name="kernel.event_listener" event="kernel.response" method="onKernelResponse" />

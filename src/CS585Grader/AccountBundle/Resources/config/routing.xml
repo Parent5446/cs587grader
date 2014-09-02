@@ -16,4 +16,7 @@
     <route id="cs585_grader_account_reposelector" path="/profile/repository">
         <default key="_controller">CS585GraderAccountBundle:RepositorySelection:index</default>
     </route>
+    <route id="cs585_grader_account_userlist" path="/admin/users">
+        <default key="_controller">CS585GraderAccountBundle:User:list</default>
+    </route>
 </routes>
