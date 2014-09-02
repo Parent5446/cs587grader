@@ -24,7 +24,8 @@
            xmlns:assetic="http://symfony.com/schema/dic/assetic"
            xmlns:fos-user="http://example.org/schema/dic/fos_user"
            xmlns:hwi-oauth="http://example.org/schema/dic/hwi_oauth"
-           xmlns:nelmio-security="http://example.org/schema/dic/nelmio_security">
+           xmlns:nelmio-security="http://example.org/schema/dic/nelmio_security"
+           xmlns:doctrine-migrations="http://symfony.com/schema/dic/doctrine/migrations">
     <imports>
         <import resource="parameters.yml"/>
         <import resource="security.yml" />
@@ -79,6 +80,10 @@
                        path="%database_path%" />
         <doctrine:orm auto-generate-proxy-classes="%kernel.debug%" auto-mapping="true" />
     </doctrine:config>
+    <doctrine-migrations:config dir-name="%kernel.root_dir%/Resources/migrations"
+                                namespace="CS587Grader\Migrations"
+                                table-name="migration_versions"
+                                name="CS587Grader Migrations" />
 
     <swiftmailer:config transport="%mailer_transport%"
                         host="%mailer_host%"

@@ -42,6 +42,9 @@ class User extends BaseUser {
 	/** @var int Auto-generated surrogate key */
 	protected $id;
 
+	/** @var string User's real name */
+	protected $realName;
+
 	/** @var string OAuth access token */
 	protected $accessToken;
 
@@ -61,6 +64,24 @@ class User extends BaseUser {
 		parent::__construct();
 
 		$this->submissions = new ArrayCollection();
+	}
+
+	/**
+	 * Get the user's real name
+	 *
+	 * @return string
+	 */
+	public function getRealName() {
+		return $this->realName;
+	}
+
+	/**
+	 * Set the user's real name
+	 *
+	 * @param string $realName
+	 */
+	public function setRealName( $realName ) {
+		$this->realName = $realName;
 	}
 
 	/**

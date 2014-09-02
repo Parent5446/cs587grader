@@ -13,6 +13,7 @@
 			<tr>
 				<th>#</th>
 				<th>Username</th>
+				<th>Real Name</th>
 				<th>Repository</th>
 			</tr>
 			</thead>
@@ -21,6 +22,7 @@
 				<tr>
 					<td>{{ loop.index }}</td>
 					<td>{{ user.username }}</td>
+					<td>{{ user.realName }}</td>
 					<td>{{ user.repository }}</td>
 				</tr>
 			{% endfor %}

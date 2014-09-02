@@ -14,6 +14,8 @@
 			<tr>
 				<th>#</th>
 				<th>Username</th>
+				<th>Real Name</th>
+				<th>Repository</th>
 				<th>Grade</th>
 				<th>Reason</th>
 				<th>Actions</th>
@@ -24,6 +26,8 @@
 				<tr>
 					<td>{{ loop.index }}</td>
 					<td>{{ grade.user.username }}</td>
+					<td>{{ grade.user.realName }}</td>
+					<td>{{ grade.user.repository }}</td>
 					<td>{{ grade.grade }}</td>
 					<td>{{ grade.gradeReason }}</td>
 					<td>

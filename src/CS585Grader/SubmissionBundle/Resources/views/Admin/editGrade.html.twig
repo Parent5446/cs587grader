@@ -6,7 +6,7 @@
 {% block nav_page_admin_assignments %}active{% endblock %}
 
 {% block content %}
-	<h1>Grade for {{ grade.user.username }} on {{ grade.assignment.name }}</h1>
+	<h1>Grade for {{ grade.user.username }} ({{ grade.user.realName }}) on {{ grade.assignment.name }}</h1>
 
 	{{ form(form) }}
 {% endblock %}
