@@ -94,8 +94,14 @@ class CollectionCommand extends DoctrineCommand {
 	 */
 	private function getCommit( Grade $grade ) {
 		// Cut out early for manual submissions
-		if ( $grade->getUser()->getRepository() !== null ) {
+		if ( !$grade->getUser()->hasRole( 'ROLE_OAUTH_USER' ) ) {
 			return 'manual';
+		} elseif ( $grade->getUser()->getRepository() === null ) {
+			$grade->setGrade( 0 );
+			$grade->setGradeReason( 'No Repository Selected' );
+			$grade->setGradeExtendedReason( '' );
+
+			return null;
 		}
 
 		$di = $this->getContainer();
