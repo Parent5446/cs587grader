@@ -9,7 +9,7 @@
 	<div class="panel panel-default">
 		<div class="panel-heading">{{ assignment.name }}</div>
 
-		<table class="table">
+		<table class="table table-hover">
 			<thead>
 			<tr>
 				<th>#</th>
@@ -23,12 +23,35 @@
 			</thead>
 			<tbody>
 			{% for grade in assignment.submissions %}
-				<tr>
+				{% set class = '' %}
+				{% if grade.grade is null %}
+					{% set class = '' %}
+				{% elseif grade.grade == 0 %}
+					{% set class = 'danger' %}
+				{% else %}
+					{% set class = 'success' %}
+				{% endif %}
+
+				<tr class="{{ class }}">
 					<td>{{ loop.index }}</td>
 					<td>{{ grade.user.username }}</td>
 					<td>{{ grade.user.realName }}</td>
 					<td>{{ grade.user.repository }}</td>
-					<td>{{ grade.grade }}</td>
+					<td>
+						{% if assignment.submissions|length > 0 and assignment.submissions[0].grade != null %}
+							<div class="dropdown">
+								<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+									{{ assignment.submissions[0].grade }}
+									<span class="caret"></span>
+								</button>
+								<ul class="dropdown-menu">
+									<li>{{ assignment.submissions[0].gradeExtendedReason|nl2br }}</li>
+								</ul>
+							</div>
+						{% else %}
+							{{ 'Not Graded'|trans }}
+						{% endif %}
+					</td>
 					<td>{{ grade.gradeReason }}</td>
 					<td>
 						<a class="btn btn-primary"

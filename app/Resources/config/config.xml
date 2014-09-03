@@ -36,6 +36,17 @@
         <parameter key="jms_job_queue.statistics">false</parameter>
     </parameters>
 
+    <services>
+        <service id="monolog.processor.IntrospectionProcessor"
+                 class="Monolog\Processor\IntrospectionProcessor">
+            <tag name="monolog.processor" />
+        </service>
+        <service id="monolog.processor.WebProcessor"
+                 class="Monolog\Processor\WebProcessor">
+            <tag name="monolog.processor" />
+        </service>
+    </services>
+
     <framework:config default-locale="%locale%" secret="%secret">
         <framework:translator enabled="true" fallback="%locale%" />
         <framework:router resource="%kernel.root_dir%/Resources/config/routing.xml" />
@@ -48,7 +59,11 @@
         </framework:templating>
     </framework:config>
 
-    <twig:config debug="%kernel.debug%" strict-variables="true" />
+    <twig:config debug="%kernel.debug%" strict-variables="true">
+        <twig:form>
+            <twig:resource>::form.html.twig</twig:resource>
+        </twig:form>
+    </twig:config>
 
     <assetic:config debug="%kernel.debug%" use-controller="false">
         <assetic:filter name="cssrewrite" apply_to="\.css$" />
