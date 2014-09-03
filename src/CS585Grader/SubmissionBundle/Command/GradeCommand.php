@@ -174,6 +174,7 @@ class GradeCommand extends DoctrineCommand
 			$grade->setGrade( 0 );
 			$grade->setGradeReason( 'Compilation Failed' );
 		} else {
+			$grade->setGrade( null );
 			$grade->setGradeReason( 'Awaiting Review' );
 		}
 		$grade->setGradeExtendedReason( "$error\n$output" );
