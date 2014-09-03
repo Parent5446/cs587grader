@@ -100,7 +100,9 @@ class GradeCommand extends DoctrineCommand
 		$fs = new Filesystem();
 
 		if ( !is_object( $grade->getFile() ) ) {
-			$this->downloadFromBitbucket( $grade, $commit );
+			if ( !$this->downloadFromBitbucket( $grade, $commit ) ) {
+				return;
+			}
 		}
 
 		// Setup temporary directory
@@ -226,6 +228,10 @@ class GradeCommand extends DoctrineCommand
 				[ 'save_to' => $filename ]
 			);
 		} catch ( ClientException $e ) {
+			$grade->setGrade( null );
+			$grade->setGradeReason( 'Download Error' );
+			$grade->setGradeExtendedReason( $e->getMessage() );
+
 			return;
 		}
 
