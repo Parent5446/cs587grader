@@ -1,9 +1,15 @@
+{% extends 'FrameworkBundle:Form:widget_attributes.html.php' %}
+
 {% block widget_attributes %}
-	class="form-control"
+	id="{{ id }}" name="{{ full_name }}" class="form-control"
+	{% if read_only %}readonly="readonly"{% endif %}
+	{% if disabled %}disabled="disabled"{% endif %}
+	{% if required %}required="required"{% endif %}
 {% endblock %}
 
 {% block button_attributes %}
-	class="btn btn-default"
+	id="{{ id }}" name="{{ full_name }}" class="btn btn-default"
+	{% if disabled %}disabled="disabled"{% endif %}
 {% endblock %}
 
 {% block form_row %}
