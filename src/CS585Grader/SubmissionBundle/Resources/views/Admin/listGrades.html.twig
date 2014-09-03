@@ -38,19 +38,15 @@
 					<td>{{ grade.user.realName }}</td>
 					<td>{{ grade.user.repository }}</td>
 					<td>
-						{% if assignment.submissions|length > 0 and assignment.submissions[0].grade != null %}
-							<div class="dropdown">
-								<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
-									{{ assignment.submissions[0].grade }}
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li>{{ assignment.submissions[0].gradeExtendedReason|nl2br }}</li>
-								</ul>
-							</div>
-						{% else %}
-							{{ 'Not Graded'|trans }}
-						{% endif %}
+						<div class="dropdown">
+							<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+								{{ grade.grade }}
+								<span class="caret"></span>
+							</button>
+							<ul class="dropdown-menu">
+								<li>{{ grade.gradeExtendedReason|nl2br }}</li>
+							</ul>
+						</div>
 					</td>
 					<td>{{ grade.gradeReason }}</td>
 					<td>
