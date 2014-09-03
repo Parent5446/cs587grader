@@ -105,7 +105,8 @@ class GradeCommand extends DoctrineCommand
 
 		// Setup temporary directory
 		$uploadsDir = $this->getContainer()->getParameter( 'cs585grader.submission.uploaddir' );
-		$workingDir = $uploadsDir . DIRECTORY_SEPARATOR . 'tmp';
+		$workingDir = $uploadsDir . DIRECTORY_SEPARATOR
+			. 'tmp_' . $grade->getUser()->getUsername() . '_' . $grade->getAssignment()->getName();
 		$fs->mkdir( $workingDir, 0700 );
 
 		// Unzip the tarball into temp directory
