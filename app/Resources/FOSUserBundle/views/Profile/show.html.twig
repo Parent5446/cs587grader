@@ -3,7 +3,7 @@
 {% block fos_user_content %}
 	<p>{{ 'profile.show.username'|trans({}, 'FOSUserBundle') }}: {{ user.username }}</p>
 	<p>{{ 'profile.show.email'|trans({}, 'FOSUserBundle') }}: {{ user.email }}</p>
-	<p>{{ 'profile.show.realName'|trans({}, 'FOSUserBundle') }}: {{ user.realName }}</p>
+	<p>{{ 'Real Name'|trans }}: <a href="{{ path('cs585_grader_account_realname') }}">{{ user.realName }}</a></p>
 	{% if is_granted( 'ROLE_OAUTH_USER' ) %}
 		<p>Repository: <a href="{{ path('cs585_grader_account_reposelector') }}">{{ user.repository ?: "None"|trans }}</a></p>
 	{% endif %}

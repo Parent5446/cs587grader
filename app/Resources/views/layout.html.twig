@@ -59,6 +59,27 @@
 </div>
 
 <div class="container">
+	{% if not is_granted( 'ROLE_ADMIN' ) and not app.user.repository %}
+		<div class="alert alert-danger alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert">
+				<span>&times;</span>
+				<span class="sr-only">Close</span>
+			</button>
+			<strong>Danger</strong> You have not yet chosen a repository. You should
+			<a class="alert-link" href="{{ path('cs585_grader_account_reposelector') }}">do so now</a>.
+		</div>
+	{% endif %}
+	{% if not app.user.realName %}
+		<div class="alert alert-warning alert-dismissible" role="alert">
+			<button type="button" class="close" data-dismiss="alert">
+				<span>&times;</span>
+				<span class="sr-only">Close</span>
+			</button>
+			<strong>Warning</strong> You have not yet set your real name. You should
+			<a class="alert-link" href="{{ path('cs585_grader_account_realname') }}">do so now</a>.
+		</div>
+	{% endif %}
+
 	{% for type, messages in app.session.flashBag.all %}
 		{% for message in messages %}
 			<div class="{{ type }}">

@@ -35,8 +35,35 @@ use Symfony\Component\HttpFoundation\Request;
  *
  * @package CS585Grader\AccountBundle\Controller
  */
-class RepositorySelectionController extends Controller
+class ProfileController extends Controller
 {
+	public function realNameAction( Request $request ) {
+		/** @var User $user */
+		$user = $this->getUser();
+		if ( !$user instanceof User ) {
+			throw new \LogicException( 'Invalid user type.' );
+		}
+
+		// Build the form
+		$form = $this->createFormBuilder( $user )
+			->add( 'realName', 'text', [ 'label' => 'Real Name: ' ] )
+			->add( 'save', 'submit' )
+			->getForm();
+
+		$form->handleRequest( $request );
+		if ( $form->isValid() ) {
+			$this->getDoctrine()->getManager()->flush();
+
+			return $this->redirect( $this->generateUrl( 'fos_user_profile_show' ) );
+		}
+
+		// Otherwise, show form
+		return $this->render(
+			'CS585GraderAccountBundle:Profile:realName.html.twig',
+			[ 'form' => $form->createView() ]
+		);
+	}
+
 	/**
 	 * Let the user set which repository to submit assignments from
 	 *
@@ -45,7 +72,7 @@ class RepositorySelectionController extends Controller
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @throws \LogicException
 	 */
-	public function indexAction( Request $request ) {
+	public function repositoryAction( Request $request ) {
 		/** @var User $user */
 		$user = $this->getUser();
 		if ( !$user instanceof User ) {
@@ -89,7 +116,7 @@ class RepositorySelectionController extends Controller
 
 		// Otherwise, show form
 		return $this->render(
-			'CS585GraderAccountBundle:RepositorySelection:index.html.twig',
+			'CS585GraderAccountBundle:Profile:repository.html.twig',
 			[ 'form' => $form->createView() ]
 		);
 	}

@@ -14,7 +14,10 @@
 
     <route id="bitbucket_login" pattern="/oauth-login/check-bitbucket" />
     <route id="cs585_grader_account_reposelector" path="/profile/repository">
-        <default key="_controller">CS585GraderAccountBundle:RepositorySelection:index</default>
+        <default key="_controller">CS585GraderAccountBundle:Profile:repository</default>
+    </route>
+    <route id="cs585_grader_account_realname" path="/profile/realname">
+        <default key="_controller">CS585GraderAccountBundle:Profile:realName</default>
     </route>
     <route id="cs585_grader_account_userlist" path="/admin/users">
         <default key="_controller">CS585GraderAccountBundle:User:list</default>

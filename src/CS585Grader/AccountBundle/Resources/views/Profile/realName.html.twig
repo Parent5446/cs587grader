@@ -1,0 +1,10 @@
+{% extends '::layout.html.twig' %}
+
+{% block title %}Repository Selector{% endblock %}
+
+{% block nav_page_admin_users %}active{% endblock %}
+
+{% block content %}
+	<div class="page-header">Set your real name</div>
+	{{ form(form) }}
+{% endblock %}
