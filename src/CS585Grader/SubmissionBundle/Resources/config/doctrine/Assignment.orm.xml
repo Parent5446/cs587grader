@@ -7,9 +7,7 @@
         <field name="description" type="string" length="255" nullable="true" />
         <field name="dueDate" type="datetime" nullable="true" />
         <one-to-many target-entity="CS585Grader\SubmissionBundle\Entity\Grade" mapped-by="assignment" field="submissions" fetch="EXTRA_LAZY">
-            <cascade>
-                <cascade-all/>
-            </cascade>
+            <cascade><cascade-all/></cascade>
         </one-to-many>
     </entity>
 </doctrine-mapping>
