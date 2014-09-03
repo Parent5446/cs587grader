@@ -35,6 +35,7 @@ use JMS\JobQueueBundle\Entity\Job;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Filesystem\Filesystem;
 
 /**
  * Command to collect all assignments and initiate jobs for grading
@@ -93,7 +94,7 @@ class CollectionCommand extends DoctrineCommand {
 	 */
 	private function getCommit( Grade $grade ) {
 		// Cut out early for manual submissions
-		if ( $grade->getFile() !== null ) {
+		if ( $grade->getUser()->getRepository() !== null ) {
 			return 'manual';
 		}
 
@@ -104,6 +105,13 @@ class CollectionCommand extends DoctrineCommand {
 			$di->getParameter( 'bitbucket_id' ),
 			$di->getParameter( 'bitbucket_secret' )
 		);
+
+		// Cleanup existing files
+		if ( $grade->getFile() !== null ) {
+			$fs = new Filesystem();
+			$fs->remove( $grade->getFile()->getPathname() );
+			$grade->setFile( null );
+		}
 
 		// Get the commit associated with the assignment tag
 		try {
