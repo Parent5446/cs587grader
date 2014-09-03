@@ -109,13 +109,30 @@ class GradeCommand extends DoctrineCommand
 		$fs->mkdir( $workingDir, 0700 );
 
 		// Unzip the tarball into temp directory
+		$pipes = [];
 		$gzip = proc_open(
 			'tar xzf ' . escapeshellarg( $grade->getFile()->getPathname() ),
-			[], $pipes, $workingDir
+			[
+				1 => [ 'pipe', 'w' ],
+				2 => [ 'pipe', 'w' ],
+			],
+			$pipes,
+			$workingDir
 		);
+
+		$output = '';
+		$error = '';
+		while ( !feof( $pipes[1] ) ) {
+			$output .= stream_get_contents( $pipes[1] );
+		}
+		while ( !feof( $pipes[2] ) ) {
+			$error .= stream_get_contents( $pipes[2] );
+		}
+
 		$status = proc_close( $gzip );
 		if ( $status !== 0 ) {
 			$grade->setGradeReason( 'Extraction Error' );
+			$grade->setGradeExtendedReason( "$error\n$output" );
 
 			return;
 		}
@@ -150,6 +167,7 @@ class GradeCommand extends DoctrineCommand
 
 		if ( !is_resource( $make ) ) {
 			$grade->setGradeReason( 'Internal Compilation Error' );
+			$grade->setGradeExtendedReason( '' );
 
 			return;
 		}
