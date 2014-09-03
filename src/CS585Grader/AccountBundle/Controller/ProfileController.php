@@ -37,6 +37,14 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class ProfileController extends Controller
 {
+	/**
+	 * Let a user edit the real name on his/her profile
+	 *
+	 * @param Request $request
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws \LogicException
+	 */
 	public function realNameAction( Request $request ) {
 		/** @var User $user */
 		$user = $this->getUser();
@@ -93,8 +101,7 @@ class ProfileController extends Controller
 
 		$repos = [];
 		foreach ( $res['repositories'] as $repo ) {
-			$repoName = "{$repo['owner']}/{$repo['name']}";
-			$repos[$repoName] = $repoName;
+			$repos["{$repo['owner']}/{$repo['slug']}"] = "{$repo['owner']}/{$repo['name']}";
 		}
 
 		$formBuilder->add( 'repository', 'choice', [
