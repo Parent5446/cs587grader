@@ -49,6 +49,9 @@ class GradeCommand extends DoctrineCommand
 	 */
 	const CFLAGS = '-Wall -Werror';
 
+	/** @var OutputInterface Output to be used */
+	private $output;
+
 	protected function configure() {
 		$this
 			->setName( 'cs585:grade' )
@@ -63,6 +66,7 @@ class GradeCommand extends DoctrineCommand
 	 */
 	protected function execute( InputInterface $input, OutputInterface $output ) {
 		$em = $this->getEntityManager( null );
+		$this->output = $output;
 
 		/** @var User $user */
 		$user = $em->getRepository( 'CS585GraderAccountBundle:User' )
@@ -71,17 +75,25 @@ class GradeCommand extends DoctrineCommand
 		$assignment = $em->getRepository( 'CS585GraderSubmissionBundle:Assignment' )
 			->findOneBy( [ 'name' => $input->getArgument( 'assignment' ) ] );
 
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL ) {
+			$this->output->writeln( "Grading assign {$assignment->getName()} for {$user->getUsername()}" );
+		}
+
 		/** @var Grade $grade */
 		$grade = $this->getEntityManager( null )->getRepository( 'CS585GraderSubmissionBundle:Grade' )
 			->findOneBy( [ 'user' => $user, 'assignment' => $assignment ] );
 		if ( !$grade ) {
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE ) {
+				$this->output->writeln( "Grade does not exist yet. Making a new one." );
+			}
 			$grade = new Grade( $assignment, $user, null );
-			$em->persist( $grade );
 		}
 
 		$this->grade( $grade, $input->getArgument( 'commit' ) );
 
+		$em->persist( $grade );
 		$em->flush();
+		$this->output = null;
 	}
 
 	/**
@@ -100,18 +112,25 @@ class GradeCommand extends DoctrineCommand
 		$fs = new Filesystem();
 
 		if ( !is_object( $grade->getFile() ) ) {
-			if ( !$this->downloadFromBitbucket( $grade, $commit ) ) {
-				return;
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE ) {
+				$this->output->writeln( "File does not exist yet. Downloading from BitBucket." );
 			}
+			$this->downloadFromBitbucket( $grade, $commit );
 		}
 
 		// Setup temporary directory
 		$uploadsDir = $this->getContainer()->getParameter( 'cs585grader.submission.uploaddir' );
 		$workingDir = $uploadsDir . DIRECTORY_SEPARATOR
 			. 'tmp_' . $grade->getUser()->getUsername() . '_' . $grade->getAssignment()->getName();
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+			$this->output->writeln( "Making temporary directory: $workingDir." );
+		}
 		$fs->mkdir( $workingDir, 0700 );
 
 		// Unzip the tarball into temp directory
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+			$this->output->writeln( "Extracting file {$grade->getFile()->getPathname()} into $workingDir." );
+		}
 		$pipes = [];
 		$gzip = proc_open(
 			'tar xzf ' . escapeshellarg( $grade->getFile()->getPathname() ),
@@ -132,8 +151,19 @@ class GradeCommand extends DoctrineCommand
 			$error .= stream_get_contents( $pipes[2] );
 		}
 
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE ) {
+			$this->output->write( $output );
+		}
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE ) {
+			$this->output->write( $error );
+		}
+
 		$status = proc_close( $gzip );
 		if ( $status !== 0 ) {
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL ) {
+				$this->output->writeln( 'Extraction Error' );
+			}
+
 			$grade->setGradeReason( 'Extraction Error' );
 			$grade->setGradeExtendedReason( "$error\n$output" );
 
@@ -147,12 +177,18 @@ class GradeCommand extends DoctrineCommand
 			/** @var \DirectoryIterator $fileInfo */
 			foreach ( new \DirectoryIterator( $workingDir ) as $fileInfo ) {
 				if ( $fileInfo->isDir() && !$fileInfo->isDot() ) {
+					if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+						$this->output->writeln( "Found Makefile at {$fileInfo->getPathname()}" );
+					}
 					$repoDir = $fileInfo->getPathname();
 				}
 			}
 		}
 
 		// Compile
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE ) {
+			$this->output->writeln( "Compiling in directory $repoDir" );
+		}
 		$make = proc_open(
 			'make CFLAGS=' . escapeshellarg( self::CFLAGS ),
 			[
@@ -168,13 +204,6 @@ class GradeCommand extends DoctrineCommand
 			]
 		);
 
-		if ( !is_resource( $make ) ) {
-			$grade->setGradeReason( 'Internal Compilation Error' );
-			$grade->setGradeExtendedReason( '' );
-
-			return;
-		}
-
 		// Extract all stdout and stderr
 		$output = '';
 		$error = '';
@@ -185,6 +214,13 @@ class GradeCommand extends DoctrineCommand
 			$error .= stream_get_contents( $pipes[2] );
 		}
 
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERY_VERBOSE ) {
+			$this->output->write( $output );
+		}
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE ) {
+			$this->output->write( $error );
+		}
+
 		// Wait for termination
 		fclose( $pipes[1] );
 		fclose( $pipes[2] );
@@ -192,15 +228,26 @@ class GradeCommand extends DoctrineCommand
 
 		// Check for compile failure
 		if ( $status !== 0 ) {
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL ) {
+				$this->output->writeln( 'Compilation Failed' );
+			}
+
 			$grade->setGrade( 0 );
 			$grade->setGradeReason( 'Compilation Failed' );
 		} else {
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_NORMAL ) {
+				$this->output->writeln( 'Success' );
+			}
+
 			$grade->setGrade( null );
 			$grade->setGradeReason( 'Awaiting Review' );
 		}
 		$grade->setGradeExtendedReason( "$error\n$output" );
 
 		// Cleanup
+		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+			$this->output->writeln( "Removing working directory $workingDir" );
+		}
 		$fs->remove( $workingDir );
 	}
 
@@ -210,7 +257,7 @@ class GradeCommand extends DoctrineCommand
 	 * @param Grade $grade Grade to retrieve for
 	 * @param string $commit Commit to download
 	 */
-	private function  downloadFromBitbucket( Grade $grade, $commit ) {
+	private function downloadFromBitbucket( Grade $grade, $commit ) {
 		$di = $this->getContainer();
 		$user = $grade->getUser();
 		$client = $user->getBitbucketClient(
@@ -223,11 +270,19 @@ class GradeCommand extends DoctrineCommand
 
 		// Fetch the tarball for the commit
 		try {
-			$client->get(
-				"https://bitbucket.org/{$user->getUsername()}/{$user->getRepository()}/get/$commit.tar.gz",
-				[ 'save_to' => $filename ]
-			);
+			$url =
+				"https://bitbucket.org/{$user->getUsername()}/{$user->getRepository()}/get/$commit.tar.gz";
+
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+				$this->output->writeln( "Donwloading from $url" );
+			}
+
+			$client->get( $url, [ 'save_to' => $filename ] );
 		} catch ( ClientException $e ) {
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+				$this->output->writeln( "Donwload error: {$e->getMessage()}" );
+			}
+
 			$grade->setGrade( null );
 			$grade->setGradeReason( 'Download Error' );
 			$grade->setGradeExtendedReason( $e->getMessage() );
