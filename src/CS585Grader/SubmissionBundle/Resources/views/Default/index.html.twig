@@ -42,7 +42,7 @@
 					<td>{{ assignment.dueDate|date('Y-m-d H:i:s') }}</td>
 					<td class="cs585-countdown" data-duedate="{{ assignment.dueDate|date('c') }}"></td>
 					<td>
-						{% if assignment.submissions|length > 0 and assignment.submissions[0].grade != null %}
+						{% if assignment.submissions|length > 0 and assignment.submissions[0].grade is not null %}
 							<div class="dropdown">
 								<button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
 									{{ assignment.submissions[0].grade }}
