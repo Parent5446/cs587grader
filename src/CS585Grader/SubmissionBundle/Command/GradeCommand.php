@@ -175,7 +175,7 @@ class GradeCommand extends DoctrineCommand
 
 		$fileIterator = new \RecursiveDirectoryIterator( $workingDir );
 		$iterIterator = new \RecursiveIteratorIterator( $fileIterator );
-		$makefileIterator = new \RegexIterator( $iterIterator, '/^Makefile$/' );
+		$makefileIterator = new \RegexIterator( $iterIterator, '!/Makefile$!' );
 
 		/** @var \DirectoryIterator $fileInfo */
 		foreach ( $makefileIterator as $pathname => $fileInfo ) {
