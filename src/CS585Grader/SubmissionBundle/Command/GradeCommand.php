@@ -173,7 +173,7 @@ class GradeCommand extends DoctrineCommand
 		// Search for a Makefil in the project
 		$repoDir = null;
 
-		$fileIterator = new \RecursiveDirectoryIterator( $repoDir );
+		$fileIterator = new \RecursiveDirectoryIterator( $workingDir );
 		$iterIterator = new \RecursiveIteratorIterator( $fileIterator );
 		$makefileIterator = new \RegexIterator( $iterIterator, '^Makefile$' );
 
