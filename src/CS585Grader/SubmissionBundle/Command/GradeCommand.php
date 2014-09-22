@@ -170,24 +170,26 @@ class GradeCommand extends DoctrineCommand
 			return;
 		}
 
-		$repoDir = $workingDir;
-		// If Makefile is not in root dir, the repository might have been put into
-		// a top-level directory. Try changing into first directory and go from there
-		if ( !file_exists( "$repoDir/Makefile" ) ) {
-			/** @var \DirectoryIterator $fileInfo */
-			foreach ( new \DirectoryIterator( $workingDir ) as $fileInfo ) {
-				if ( $fileInfo->isDir() && !$fileInfo->isDot() ) {
-					if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
-						$this->output->writeln( "Found Makefile at {$fileInfo->getPathname()}" );
-					}
-					$repoDir = $fileInfo->getPathname();
-				}
+		// Search for a Makefil in the project
+		$repoDir = null;
+
+		$fileIterator = new \RecursiveDirectoryIterator( $repoDir );
+		$iterIterator = new \RecursiveIteratorIterator( $fileIterator );
+		$makefileIterator = new \RegexIterator( $iterIterator, '^Makefile$' );
+
+		/** @var \DirectoryIterator $fileInfo */
+		foreach ( $makefileIterator as $pathname => $fileInfo ) {
+			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
+				$this->output->writeln( "Found Makefile at {$pathname}" );
+			}
+			if ( $repoDir === null || strlen( $pathname ) < strlen( $repoDir ) ) {
+				$repoDir = $pathname;
 			}
 		}
 
 		// Compile
 		if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_VERBOSE ) {
-			$this->output->writeln( "Compiling in directory $repoDir" );
+			$this->output->writeln( 'Compiling in directory ' . ( $repoDir ?: $workingDir ) );
 		}
 		$make = proc_open(
 			'make CFLAGS=' . escapeshellarg( self::CFLAGS ),
@@ -196,7 +198,7 @@ class GradeCommand extends DoctrineCommand
 				2 => [ 'pipe', 'w' ],
 			],
 			$pipes,
-			$repoDir,
+			$repoDir ?: $workingDir,
 			null,
 			[
 				'suppress_errors' => true,
