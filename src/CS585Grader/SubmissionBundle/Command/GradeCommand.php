@@ -47,7 +47,7 @@ class GradeCommand extends DoctrineCommand
 	/**
 	 * CFLAGS to be passed to compiler
 	 */
-	const CFLAGS = '-Wall -Werror';
+	const CFLAGS = '-Wall -Werror -std=c++11';
 
 	/** @var OutputInterface Output to be used */
 	private $output;
