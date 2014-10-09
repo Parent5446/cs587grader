@@ -182,7 +182,7 @@ class GradeCommand extends DoctrineCommand
 			if ( $this->output->getVerbosity() >= OutputInterface::VERBOSITY_DEBUG ) {
 				$this->output->writeln( "Found Makefile at {$pathname}" );
 			}
-			if ( $repoDir === null || strlen( $pathname ) < strlen( $repoDir ) ) {
+			if ( $repoDir === null || strlen( $fileInfo->getPath() ) < strlen( $repoDir ) ) {
 				$repoDir = $fileInfo->getPath();
 			}
 		}
